@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import { useMatches } from "@remix-run/react";
 import VuMeter from "./VuMeter";
+import Fader from "./Fader";
 import useVuMeter from "~/hooks/useVuMeter";
 import { dBToPercent, transpose } from "~/utils/scale";
 
@@ -110,31 +111,12 @@ function BusReceive({
       </div>
       <div className="fader-wrap">
         <div className="fader-wrap">
-          <div className="window">
-            <input
-              disabled
-              className="level-val"
-              value={Math.round(volume) + " db"}
-            />
-          </div>
-
-          <div className="levels-wrap">
-            <VuMeter meterValue={meterVal} height={300} width={10} />
-          </div>
-          <div className="vol-wrap">
-            <input
-              disabled={currentTracks[busIndex].playbackState === "playback"}
-              id={currentTracks[busIndex]}
-              className="volume"
-              style={{ width: 300, top: 85 }}
-              type="range"
-              min={-100}
-              max={12}
-              step={0.1}
-              value={volume}
-              onChange={changeVolume}
-            />
-          </div>
+          <Fader
+            channel={busChannel}
+            volume={volume}
+            changeVolume={changeVolume}
+            currentTrack={currentTracks[busIndex]}
+          />
         </div>
         <div className="track-labels">
           <span className="track-name">Bus {busIndex + 1}</span>

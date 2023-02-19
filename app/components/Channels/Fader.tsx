@@ -2,7 +2,7 @@ import VuMeter from "./VuMeter";
 import useVuMeter from "~/hooks/useVuMeter";
 
 type Props = {
-  channel: Channel;
+  channel: Channel | Volume | Destination;
   volume: number;
   changeVolume: (arg: React.ChangeEvent<HTMLInputElement>) => void;
   currentTrack: TrackSettings;
