@@ -22,11 +22,9 @@ function Mixer({ song }: Props) {
   const fetcher = useFetcher();
   const matches = useMatches();
   const loop = useRef<Loop | null>(null);
+  const tracks = song.tracks;
 
   const busChannels = useRef<Volume[]>([new Volume(), new Volume()]);
-
-  const [playbackState, setPlaybackState] = useState("free");
-  const playbackStateSet = (value: string) => setPlaybackState(value);
 
   const currentMixString = localStorage.getItem("currentMix");
   const currentMix =
@@ -37,7 +35,10 @@ function Mixer({ song }: Props) {
     (currentTracksString && JSON.parse(currentTracksString)) ||
     matches[1].data.currentTracks;
 
-  const tracks = song.tracks;
+  const [playbackState, setPlaybackState] = useState(
+    currentTracks.playbackState
+  );
+  const playbackStateSet = (value: string[]) => setPlaybackState(value);
 
   const [busFxOpen, setBusFxOpen] = useState([true, true]);
   const handleSetBusFxOpen = (value: boolean[]) => setBusFxOpen(value);
@@ -74,7 +75,12 @@ function Mixer({ song }: Props) {
     const realTimeMixString = localStorage.getItem("realTimeMix");
     const realTimeMix = realTimeMixString && JSON.parse(realTimeMixString);
 
-    if (currentTracks[index].playbackState === "record") {
+    console.log(
+      "currentTracks[index].playbackState[index]",
+      currentTracks[index].playbackState[index]
+    );
+    if (currentTracks[index].playbackState[index] === "record") {
+      console.log("REcording!!!");
       let data: {
         time: string;
         0: number;
@@ -89,32 +95,40 @@ function Mixer({ song }: Props) {
           currentTracksString && JSON.parse(currentTracksString);
         console.log("i.current", Math.round(i.current));
 
-        data[Math.round(i.current)] = {
+        // data[Math.round(i.current)] = {
+        //   time: t.seconds.toFixed(1),
+        //   0: currentTracks[0].volume,
+        //   1: currentTracks[1].volume,
+        //   2: currentTracks[2].volume,
+        //   3: currentTracks[3].volume,
+        // };
+
+        data.push({
           time: t.seconds.toFixed(1),
           0: currentTracks[0].volume,
           1: currentTracks[1].volume,
           2: currentTracks[2].volume,
           3: currentTracks[3].volume,
-        };
+        });
 
-        // localStorage.setItem(
-        //   "realTimeMix",
-        //   JSON.stringify({
-        //     ...realTimeMix,
-        //     mix: data,
-        //   })
-        // );
-
-        fetcher.submit(
-          {
-            actionName: "saveRealTimeMix",
-            realTimeMix: JSON.stringify({
-              ...realTimeMix,
-              mix: data,
-            }),
-          },
-          { method: "post", action: "/saveMix", replace: true }
+        localStorage.setItem(
+          "realTimeMix",
+          JSON.stringify({
+            ...realTimeMix,
+            mix: data,
+          })
         );
+
+        // fetcher.submit(
+        //   {
+        //     actionName: "saveRealTimeMix",
+        //     realTimeMix: JSON.stringify({
+        //       ...realTimeMix,
+        //       mix: data,
+        //     }),
+        //   },
+        //   { method: "post", action: "/saveMix", replace: true }
+        // );
 
         i.current = i.current + 0.5;
       }, 0.1).start();
@@ -184,7 +198,6 @@ function Mixer({ song }: Props) {
     </div>
   ) : (
     <div className="console">
-      {/* <MixerContext.Provider value={playbackState}> */}
       <div className="fx-panels-wrap">
         {busFxControls.map((control: any, j: number) => {
           const noControls = control.every((bool: boolean) => bool === null);
@@ -275,7 +288,6 @@ function Mixer({ song }: Props) {
           })}
         </div>
       </div>
-      {/* </MixerContext.Provider> */}
 
       <div className="flex">
         <div className="controls flex gap8 pt8">

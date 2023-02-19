@@ -6,7 +6,7 @@ import pause from "~/assets/pause";
 type Props = {
   song: Song;
   startRecording: (arg: number) => void;
-  playbackState: string;
+  playbackState: string[];
 };
 
 function Play({ song, startRecording, playbackState }: Props) {
@@ -53,11 +53,10 @@ function Play({ song, startRecording, playbackState }: Props) {
   const currentTracksString = localStorage.getItem("currentTracks");
   const currentTracks = currentTracksString && JSON.parse(currentTracksString);
 
-  const indices = currentTracks.reduce(
-    (r: [], v: TrackSettings, i: any) =>
-      r.concat(v.playbackState === "record" ? i : []),
-    []
-  );
+  const indices = currentTracks.reduce((r: [], v: TrackSettings, i: any) => {
+    console.log("v.playbackState[i]", v.playbackState[i]);
+    return r.concat(v.playbackState[i] === "record" ? i : []);
+  }, []);
 
   return (
     <div>
@@ -66,11 +65,12 @@ function Play({ song, startRecording, playbackState }: Props) {
           className="button square red"
           onClick={() => {
             startSong();
-            currentTracks.forEach((currentTrack: TrackSettings) => {
-              if (
-                currentTrack.playbackState === "record" &&
-                state === "playing"
-              ) {
+            currentTracks.forEach((currentTrack: TrackSettings, i: number) => {
+              console.log(
+                "currentTrack.playbackState[i]",
+                currentTrack.playbackState[i]
+              );
+              if (currentTrack.playbackState[i] === "record") {
                 indices.forEach((index: number) => startRecording(index));
               }
             });
@@ -83,8 +83,8 @@ function Play({ song, startRecording, playbackState }: Props) {
           className="button square red"
           onClick={() => {
             initializeAudioContext();
-            currentTracks.forEach((currentTrack: TrackSettings) => {
-              if (currentTrack.playbackState === "record") {
+            currentTracks.forEach((currentTrack: TrackSettings, i: number) => {
+              if (currentTrack.playbackState[i] === "record") {
                 indices.forEach((index: number) => startRecording(index));
               }
             });

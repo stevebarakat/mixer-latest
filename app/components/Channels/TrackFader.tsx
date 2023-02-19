@@ -8,7 +8,7 @@ type Props = {
   currentTrack: TrackSettings;
   currentTracks: TrackSettings[];
   isMuted: boolean;
-  playbackState: string;
+  playbackState: string[];
   index: number;
 };
 
@@ -23,7 +23,7 @@ function TrackFader({
   const [volume, setVolume] = useState(() => currentTrack.volume);
 
   useEffect(() => {
-    if (currentTrack.playbackState === "playback") {
+    if (currentTrack.playbackState[index] === "playback") {
       console.log("drawing!");
       const rtmString = localStorage.getItem("realTimeMix");
       const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
@@ -39,19 +39,19 @@ function TrackFader({
       });
     }
     return () => {
-      if (currentTracks[index].playbackState === "playback") {
+      if (currentTracks[index].playbackState[index] === "playback") {
         Draw.dispose();
       }
     };
   }, [currentTrack.playbackState, currentTracks, index]);
 
   useEffect(() => {
-    if (currentTracks[index].playbackState === "playback")
+    if (currentTracks[index].playbackState[index] === "playback")
       channel.volume.value = volume;
   }, [volume, channel.volume, currentTracks, index]);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
-    if (playbackState !== "playback") {
+    if (currentTracks[index].playbackState[index] !== "playback") {
       if (isMuted) return;
       const value = parseFloat(e.currentTarget.value);
       const transposed = transpose(value);
@@ -65,7 +65,7 @@ function TrackFader({
   return (
     <Fader
       id={currentTrack?.id}
-      disabled={currentTrack?.playbackState === "playback"}
+      disabled={currentTrack?.playbackState[index] === "playback"}
       channel={channel}
       volume={volume}
       changeVolume={changeVolume}

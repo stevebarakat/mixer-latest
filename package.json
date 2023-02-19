@@ -14,7 +14,7 @@
     "start": "remix-serve build"
   },
   "dependencies": {
-    "@prisma/client": "^4.7.1",
+    "@prisma/client": "^4.10.1",
     "@remix-run/node": "^1.7.2",
     "@remix-run/react": "^1.7.2",
     "@remix-run/serve": "^1.7.2",
@@ -52,7 +52,7 @@
     "postcss-cli": "^10.0.0",
     "postcss-import": "^15.1.0",
     "postcss-preset-env": "^7.8.3",
-    "prisma": "^4.8.1",
+    "prisma": "^4.10.1",
     "prisma-dbml-generator": "^0.10.0",
     "typescript": "^4.7.4"
   },
