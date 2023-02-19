@@ -2,9 +2,7 @@ import { updateCurrentMix, array as fx } from "~/utils";
 import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import { useMatches } from "@remix-run/react";
-import VuMeter from "./VuMeter";
 import Fader from "./Fader";
-import useVuMeter from "~/hooks/useVuMeter";
 import { dBToPercent, transpose } from "~/utils/scale";
 
 type Props = {
@@ -25,7 +23,6 @@ function BusReceive({
   handleSetBusFxChoices,
 }: Props) {
   const matches = useMatches();
-  const meterVal = useVuMeter([busChannel]);
 
   const currentMix = matches[1].data.currentMix;
   const currentTracks = matches[1].data.currentTracks;

@@ -4,9 +4,7 @@ import { useFetcher } from "@remix-run/react";
 import type { FormEvent } from "react";
 import Pan from "./Pan";
 import SoloMute from "./SoloMute";
-import Fader from "./Fader";
-import VuMeter from "./VuMeter";
-import useVuMeter from "~/hooks/useVuMeter";
+import TrackFader from "./TrackFader";
 import { dBToPercent, transpose } from "~/utils/scale";
 import TrackSend from "./TrackSend";
 import { recordIcon } from "~/assets/recordIcon";
@@ -46,8 +44,6 @@ export default function ChannelStrip({
   const fetcher = useFetcher();
   const currentMixString = localStorage.getItem("currentMix");
   const currentMix = currentMixString && JSON.parse(currentMixString);
-
-  const [volume, setVolume] = useState(() => currentTracks[trackIndex].volume);
 
   const [isMuted, setIsMuted] = useState(false);
   const handleSetIsMuted = (value: boolean) => setIsMuted(value);
@@ -125,30 +121,6 @@ export default function ChannelStrip({
     // window.location.reload();
   }
 
-  function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
-    if (playbackState !== "playback") {
-      if (isMuted) return;
-      const id = parseInt(e.currentTarget.id);
-      // setTrackIndex(id);
-      const value = parseFloat(e.currentTarget.value);
-      const transposed = transpose(value);
-      const scaled = dBToPercent(transposed);
-      channel.volume.value = scaled;
-      setVolume(value);
-
-      if (channel.name === "Channel") {
-        currentTracks[trackIndex].volume = value;
-        localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
-      }
-      if (channel.name === "Volume") currentMix.bussesVolume[id] = value;
-      if (channel.name === "Destination") currentMix.masterVolume = value;
-    }
-    // if (playbackState === "record") {
-    //   localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
-    //   localStorage.setItem("currentMix", JSON.stringify(currentMix));
-    // }
-  }
-
   return (
     <div className="channel">
       <div className="fx-toggle">
@@ -203,11 +175,12 @@ export default function ChannelStrip({
             currentTrack={currentTrack}
             channel={channel}
           />
-          <Fader
+          <TrackFader
             channel={channel}
-            volume={volume}
-            changeVolume={changeVolume}
             currentTrack={currentTrack}
+            currentTracks={currentTracks}
+            isMuted={isMuted}
+            playbackState={playbackState}
           />
           <form onChange={savePlaybackState} className="flex gap4">
             <div className="flex controls">

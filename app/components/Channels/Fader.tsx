@@ -6,6 +6,7 @@ type Props = {
   volume: number;
   changeVolume: (arg: React.ChangeEvent<HTMLInputElement>) => void;
   currentTrack: TrackSettings;
+  currentTracks: TrackSettings[];
 };
 
 function Fader({ channel, volume, changeVolume, currentTrack }: Props) {
