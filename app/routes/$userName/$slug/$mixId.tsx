@@ -42,7 +42,7 @@ export default function MixNameRoute() {
       fetcher.load(`/songs/${currentMix.songSlug}`);
       localStorage.setItem("currentMix", JSON.stringify(currentMix));
       localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
-      // localStorage.setItem("realTimeMix", JSON.stringify(realTimeMix));
+      localStorage.setItem("realTimeMix", JSON.stringify(realTimeMix));
     }
   }, [fetcher, currentMix, currentTracks, realTimeMix]);
 

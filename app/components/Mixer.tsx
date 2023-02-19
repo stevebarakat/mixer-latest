@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from "react";
-import { MixerContext } from "~/state/context";
-import { clamp } from "lodash";
+import { useState, useRef } from "react";
 import { useMatches, useFetcher } from "@remix-run/react";
-import { Destination, Volume, Loop, Transport as t, now } from "tone";
+import { Destination, Volume, Loop, Transport as t } from "tone";
 import Controls from "./Transport/Controls";
 import MasterVol from "./Channels/Master";
 import BusReceive from "./Channels/BusReceive";
@@ -21,10 +19,9 @@ type Props = {
 };
 
 function Mixer({ song }: Props) {
-  const matches = useMatches();
   const fetcher = useFetcher();
+  const matches = useMatches();
   const loop = useRef<Loop | null>(null);
-  const looper = useRef<Loop | null>(null);
 
   const busChannels = useRef<Volume[]>([new Volume(), new Volume()]);
 
@@ -80,8 +77,6 @@ function Mixer({ song }: Props) {
     if (currentTracks[index].playbackState === "record") {
       let data: {
         time: string;
-        currentMix: MixSettings;
-        currentTracks: TrackSettings;
         0: number;
         1: number;
         2: number;
@@ -89,8 +84,6 @@ function Mixer({ song }: Props) {
       }[] = [];
 
       loop.current = new Loop(() => {
-        const currentMixString = localStorage.getItem("currentMix");
-        const currentMix = currentMixString && JSON.parse(currentMixString);
         const currentTracksString = localStorage.getItem("currentTracks");
         const currentTracks =
           currentTracksString && JSON.parse(currentTracksString);
@@ -98,21 +91,31 @@ function Mixer({ song }: Props) {
 
         data[Math.round(i.current)] = {
           time: t.seconds.toFixed(1),
-          currentMix,
-          currentTracks,
           0: currentTracks[0].volume,
           1: currentTracks[1].volume,
           2: currentTracks[2].volume,
           3: currentTracks[3].volume,
         };
 
-        localStorage.setItem(
-          "realTimeMix",
-          JSON.stringify({
-            ...realTimeMix,
-            mix: data,
-          })
+        // localStorage.setItem(
+        //   "realTimeMix",
+        //   JSON.stringify({
+        //     ...realTimeMix,
+        //     mix: data,
+        //   })
+        // );
+
+        fetcher.submit(
+          {
+            actionName: "saveRealTimeMix",
+            realTimeMix: JSON.stringify({
+              ...realTimeMix,
+              mix: data,
+            }),
+          },
+          { method: "post", action: "/saveMix", replace: true }
         );
+
         i.current = i.current + 0.5;
       }, 0.1).start();
     }
@@ -124,31 +127,6 @@ function Mixer({ song }: Props) {
     } else {
       t.seconds = t.seconds - 5;
     }
-    // // loop.current?.stop();
-    // if (playbackState === "record") {
-    //   t.cancel();
-    //   t.start();
-    //   const realTimeMixString = localStorage.getItem("realTimeMix");
-    //   const realTimeMix = realTimeMixString && JSON.parse(realTimeMixString);
-    //   looper.current = new Loop(() => {
-    //     console.log("i.current", i.current - 5);
-    //     realTimeMix.mix.splice(i.current - 5, i.current + 5, {
-    //       time: t.seconds.toFixed(0),
-    //       currentMix: JSON.parse(localStorage.getItem("currentMix")),
-    //       currentTracks: JSON.parse(localStorage.getItem("currentTracks")),
-    //     });
-    //     console.log("realTimeMix", realTimeMix);
-    //     looper.current?.stop("+5");
-    //     localStorage.setItem(
-    //       "realTimeMix",
-    //       JSON.stringify({
-    //         ...realTimeMix,
-    //         mix: realTimeMix.mix,
-    //       })
-    //     );
-    //   }, "2n").start("+0.5");
-    // }
-    // loop.current?.start();
   }
 
   const [trackFxTypes, trackFxControls] = useFxType({

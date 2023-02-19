@@ -85,7 +85,6 @@ export default function ChannelStrip({
     fetcher.submit(
       {
         actionName: "saveMix",
-        realTimeMix: localStorage.getItem("realTimeMix")!,
         currentMix: localStorage.getItem("currentMix")!,
         currentTracks,
       },
@@ -103,7 +102,7 @@ export default function ChannelStrip({
     localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
 
     setPlaybackState(currentTracks[trackIndex].playbackState);
-    saveMix(trackIndex, playbackState);
+    saveMix(trackIndex, currentTracks[trackIndex].playbackState);
 
     console.log(
       "currentTracks[trackIndex].playbackState",
@@ -120,6 +119,8 @@ export default function ChannelStrip({
     // }
     // window.location.reload();
   }
+
+  console.log("currentTrack.playbackState", currentTrack.playbackState);
 
   return (
     <div className="channel">
@@ -183,7 +184,7 @@ export default function ChannelStrip({
             isMuted={isMuted}
             playbackState={playbackState}
           />
-          <form onChange={savePlaybackState} className="flex gap4">
+          <div className="flex gap4">
             <div className="flex controls">
               <div style={{ position: "relative", width: "100%" }}>
                 <input
@@ -191,7 +192,10 @@ export default function ChannelStrip({
                   id={`${trackIndex}-record`}
                   name="playback-state"
                   value="record"
-                  defaultChecked={currentTrack.playbackState === "record"}
+                  onChange={savePlaybackState}
+                  defaultChecked={
+                    currentTracks[trackIndex].playbackState === "record"
+                  }
                 />
                 <label className="label" htmlFor={`${trackIndex}-record`}>
                   <div style={{ width: 10 }}>{recordIcon}</div>
@@ -205,7 +209,10 @@ export default function ChannelStrip({
                   id={`${trackIndex}-playback`}
                   name="playback-state"
                   value="playback"
-                  defaultChecked={currentTrack.playbackState === "playback"}
+                  onChange={savePlaybackState}
+                  defaultChecked={
+                    currentTracks[trackIndex].playbackState === "playback"
+                  }
                 />
                 <label className="label" htmlFor={`${trackIndex}-playback`}>
                   <div style={{ width: 10 }}>{earIcon}</div>
@@ -219,14 +226,17 @@ export default function ChannelStrip({
                   id={`${trackIndex}-free`}
                   name="playback-state"
                   value="free"
-                  defaultChecked={currentTrack.playbackState === "free"}
+                  onChange={savePlaybackState}
+                  defaultChecked={
+                    currentTracks[trackIndex].playbackState === "free"
+                  }
                 />
                 <label className="label" htmlFor={`${trackIndex}-free`}>
                   F
                 </label>
               </div>
             </div>
-          </form>
+          </div>
           <div className="track-labels">
             <span className="track-name">{track.name}</span>
           </div>

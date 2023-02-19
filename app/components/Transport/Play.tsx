@@ -66,9 +66,14 @@ function Play({ song, startRecording, playbackState }: Props) {
           className="button square red"
           onClick={() => {
             startSong();
-            playbackState === "record" &&
-              state === "playing" &&
-              indices.forEach((index: number) => startRecording(index));
+            currentTracks.forEach((currentTrack: TrackSettings) => {
+              if (
+                currentTrack.playbackState === "record" &&
+                state === "playing"
+              ) {
+                indices.forEach((index: number) => startRecording(index));
+              }
+            });
           }}
         >
           {playerState}
@@ -78,8 +83,11 @@ function Play({ song, startRecording, playbackState }: Props) {
           className="button square red"
           onClick={() => {
             initializeAudioContext();
-            playbackState === "record" &&
-              indices.forEach((index: number) => startRecording(index));
+            currentTracks.forEach((currentTrack: TrackSettings) => {
+              if (currentTrack.playbackState === "record") {
+                indices.forEach((index: number) => startRecording(index));
+              }
+            });
           }}
         >
           {play}
