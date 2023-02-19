@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider            = "prisma-dbml-generator"
+  outputName          = "remixer.dbml"
+  projectName         = "Remixer"
+  projectDatabaseType = "PostgreSQL"
+  projectNote         = "currently in development"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String          @id @default(uuid())
+  userName      String          @unique
+  passwordHash  String
+  mixSettings   MixSettings[]
+  trackSettings TrackSettings[]
+}
+
+model realTimeMix {
+  id            String      @id @default(uuid())
+  mix           Json        @default("[]")
+  mixSettings   MixSettings @relation(fields: [mixSettingsId], references: [id], onDelete: Cascade)
+  mixSettingsId String      @default(uuid())
+}
+
+model MixSettings {
+  id                   String          @id @default(uuid())
+  songSlug             String
+  artistPhoto          String          @default("default")
+  coverArt             String          @default("0")
+  mixName              String
+  userName             String
+  userId               String
+  masterVolume         Float           @default(-32)
+  bussesVolume         Float[]         @default([-100, -100])
+  busFxChoices         Json            @default("[[],[]]")
+  trackFxChoices       Json            @default("[]")
+  delaysMix            Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  delaysTime           Float[]         @default([1, 1, 1, 1])
+  delaysFeedback       Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  reverbsMix           Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  reverbsPreDelay      Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  reverbsDecay         Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  pitchShiftsMix       Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  pitchShiftsPitch     Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  pitchShiftsDelayTime Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  pitchShiftsSize      Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  pitchShiftsFeedback  Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  chebyshevsMix        Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  chebyshevsOrder      Int[]           @default([50, 50, 50, 50])
+  freqShiftsMix        Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  freqShiftsFreq       Int[]           @default([2000, 2000, 2000, 2000])
+  compressorsThreshold Int[]           @default([-50, -50, -50, -50])
+  compressorsRatio     Float[]         @default([10, 10, 10, 10])
+  compressorsKnee      Float[]         @default([20, 20, 20, 20])
+  compressorsAttack    Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  compressorsRelease   Float[]         @default([0.5, 0.5, 0.5, 0.5])
+  private              Boolean         @default(false)
+  likes                Int             @default(0)
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  user                 User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackSettings        TrackSettings[]
+  realTimeMix          realTimeMix[]
+}
+
+model TrackSettings {
+  id                   String      @id @default(uuid())
+  position             Int         @default(autoincrement())
+  mixName              String
+  mixSettings          MixSettings @relation(fields: [mixSettingsId], references: [id], onDelete: Cascade)
+  trackSettingsId      String      @default(uuid())
+  mixSettingsId        String      @default(uuid())
+  songSlug             String
+  userId               String
+  user                 User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  playbackState        String      @default("free")
+  volume               Float       @default(-32)
+  solo                 Boolean     @default(false)
+  mute                 Boolean     @default(false)
+  pan                  Float       @default(0)
+  activeBusses         Boolean[]   @default([false, false])
+  eqHi                 Float       @default(0)
+  eqMid                Float       @default(0)
+  eqLow                Float       @default(0)
+  delaysMix            Float[]     @default([0.5, 0.5])
+  delaysTime           Float[]     @default([1, 1])
+  delaysFeedback       Float[]     @default([0.5, 0.5])
+  reverbsMix           Float[]     @default([0.5, 0.5])
+  reverbsPreDelay      Float[]     @default([0.5, 0.5])
+  reverbsDecay         Float[]     @default([0.5, 0.5])
+  pitchShiftsMix       Float[]     @default([0.5, 0.5])
+  pitchShiftsPitch     Float[]     @default([0.5, 0.5])
+  pitchShiftsDelayTime Float[]     @default([0.5, 0.5])
+  pitchShiftsSize      Float[]     @default([0.5, 0.5])
+  pitchShiftsFeedback  Float[]     @default([0.5, 0.5])
+  chebyshevsMix        Float[]     @default([0.5, 0.5])
+  chebyshevsOrder      Int[]       @default([50, 50])
+  freqShiftsMix        Float[]     @default([0.5, 0.5])
+  freqShiftsFreq       Int[]       @default([2000, 2000])
+  compressorsThreshold Int[]       @default([-50, -50])
+  compressorsRatio     Float[]     @default([10, 10])
+  compressorsKnee      Float[]     @default([20, 20])
+  compressorsAttack    Float[]     @default([0.5, 0.5])
+  compressorsRelease   Float[]     @default([0.5, 0.5])
+}
+
+model Track {
+  id     String @id @default(uuid())
+  name   String
+  songId String
+  path   String
+  song   Song   @relation(fields: [songId], references: [id])
+}
+
+model Song {
+  id       String  @id @default(uuid())
+  slug     String  @unique
+  title    String
+  artist   String
+  year     String  @default("unknown")
+  studio   String  @default("unknown")
+  location String  @default("unknown")
+  bpm      Int     @default(100)
+  start    Int     @default(0)
+  end      Int     @default(500)
+  tracks   Track[]
+}

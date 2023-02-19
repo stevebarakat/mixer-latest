@@ -1,0 +1,137 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Project "Remixer" {
+  database_type: 'PostgreSQL'
+  Note: 'currently in development'
+}
+
+Table User {
+  id String [pk]
+  userName String [unique, not null]
+  passwordHash String [not null]
+  mixSettings MixSettings [not null]
+  trackSettings TrackSettings [not null]
+}
+
+Table realTimeMix {
+  id String [pk]
+  mix Json [not null, default: '[]']
+  mixSettings MixSettings [not null]
+  mixSettingsId String [not null]
+}
+
+Table MixSettings {
+  id String [pk]
+  songSlug String [not null]
+  artistPhoto String [not null, default: 'default']
+  coverArt String [not null, default: '0']
+  mixName String [not null]
+  userName String [not null]
+  userId String [not null]
+  masterVolume Float [not null, default: -32]
+  bussesVolume Float[] [not null]
+  busFxChoices Json [not null, default: '[[],[]]']
+  trackFxChoices Json [not null, default: '[]']
+  delaysMix Float[] [not null]
+  delaysTime Float[] [not null]
+  delaysFeedback Float[] [not null]
+  reverbsMix Float[] [not null]
+  reverbsPreDelay Float[] [not null]
+  reverbsDecay Float[] [not null]
+  pitchShiftsMix Float[] [not null]
+  pitchShiftsPitch Float[] [not null]
+  pitchShiftsDelayTime Float[] [not null]
+  pitchShiftsSize Float[] [not null]
+  pitchShiftsFeedback Float[] [not null]
+  chebyshevsMix Float[] [not null]
+  chebyshevsOrder Int[] [not null]
+  freqShiftsMix Float[] [not null]
+  freqShiftsFreq Int[] [not null]
+  compressorsThreshold Int[] [not null]
+  compressorsRatio Float[] [not null]
+  compressorsKnee Float[] [not null]
+  compressorsAttack Float[] [not null]
+  compressorsRelease Float[] [not null]
+  private Boolean [not null, default: false]
+  likes Int [not null, default: 0]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  user User [not null]
+  trackSettings TrackSettings [not null]
+  realTimeMix realTimeMix [not null]
+}
+
+Table TrackSettings {
+  id String [pk]
+  position Int [increment, not null]
+  mixName String [not null]
+  mixSettings MixSettings [not null]
+  trackSettingsId String [not null]
+  mixSettingsId String [not null]
+  songSlug String [not null]
+  userId String [not null]
+  user User [not null]
+  playbackState String [not null, default: 'free']
+  volume Float [not null, default: -32]
+  solo Boolean [not null, default: false]
+  mute Boolean [not null, default: false]
+  pan Float [not null, default: 0]
+  activeBusses Boolean[] [not null]
+  eqHi Float [not null, default: 0]
+  eqMid Float [not null, default: 0]
+  eqLow Float [not null, default: 0]
+  delaysMix Float[] [not null]
+  delaysTime Float[] [not null]
+  delaysFeedback Float[] [not null]
+  reverbsMix Float[] [not null]
+  reverbsPreDelay Float[] [not null]
+  reverbsDecay Float[] [not null]
+  pitchShiftsMix Float[] [not null]
+  pitchShiftsPitch Float[] [not null]
+  pitchShiftsDelayTime Float[] [not null]
+  pitchShiftsSize Float[] [not null]
+  pitchShiftsFeedback Float[] [not null]
+  chebyshevsMix Float[] [not null]
+  chebyshevsOrder Int[] [not null]
+  freqShiftsMix Float[] [not null]
+  freqShiftsFreq Int[] [not null]
+  compressorsThreshold Int[] [not null]
+  compressorsRatio Float[] [not null]
+  compressorsKnee Float[] [not null]
+  compressorsAttack Float[] [not null]
+  compressorsRelease Float[] [not null]
+}
+
+Table Track {
+  id String [pk]
+  name String [not null]
+  songId String [not null]
+  path String [not null]
+  song Song [not null]
+}
+
+Table Song {
+  id String [pk]
+  slug String [unique, not null]
+  title String [not null]
+  artist String [not null]
+  year String [not null, default: 'unknown']
+  studio String [not null, default: 'unknown']
+  location String [not null, default: 'unknown']
+  bpm Int [not null, default: 100]
+  start Int [not null, default: 0]
+  end Int [not null, default: 500]
+  tracks Track [not null]
+}
+
+Ref: realTimeMix.mixSettingsId > MixSettings.id [delete: Cascade]
+
+Ref: MixSettings.userId > User.id [delete: Cascade]
+
+Ref: TrackSettings.mixSettingsId > MixSettings.id [delete: Cascade]
+
+Ref: TrackSettings.userId > User.id [delete: Cascade]
+
+Ref: Track.songId > Song.id

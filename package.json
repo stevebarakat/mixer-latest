@@ -1,0 +1,62 @@
+{
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "build:remix": "remix build",
+    "build:css": "postcss styles/ --dir app/css --ext .css",
+    "clean": "rimraf ./node_modules/.cache ./server/dist ./build ./public/build \"./app/styles/**/*.css\"",
+    "build": "npm run clean && run-s build:*",
+    "dev": "npm run clean && run-p dev:*",
+    "dev:remix": "remix dev",
+    "dev:css": "postcss styles/ --dir app/css --ext .css --watch",
+    "deploy": "fly deploy --remote-only",
+    "migrate": "flyctl agent restart \n npx prisma migrate dev",
+    "start": "remix-serve build"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.7.1",
+    "@remix-run/node": "^1.7.2",
+    "@remix-run/react": "^1.7.2",
+    "@remix-run/serve": "^1.7.2",
+    "autoprefixer": "^10.4.13",
+    "bcryptjs": "^2.4.3",
+    "isbot": "^3.5.4",
+    "lodash": "^4.17.21",
+    "npm-run-all": "^4.1.5",
+    "postcss-url": "^10.1.3",
+    "random-word-slugs": "^0.1.6",
+    "react": "^18.2.0",
+    "react-copy-to-clipboard": "^5.1.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.4.0",
+    "react-router-dom": "^6.4.2",
+    "react-slugify": "^2.1.0",
+    "remix": "^1.7.2",
+    "tiny-invariant": "^1.2.0",
+    "tone": "^14.7.77",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.7.2",
+    "@remix-run/eslint-config": "^1.7.2",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/lodash": "^4.14.191",
+    "@types/react": "^18.0.15",
+    "@types/react-copy-to-clipboard": "^5.0.4",
+    "@types/react-dom": "^18.0.6",
+    "@types/uuid": "^8.3.4",
+    "cssnano": "^5.1.14",
+    "esbuild-register": "^3.3.3",
+    "eslint": "^8.23.1",
+    "postcss": "^8.4.20",
+    "postcss-cli": "^10.0.0",
+    "postcss-import": "^15.1.0",
+    "postcss-preset-env": "^7.8.3",
+    "prisma": "^4.8.1",
+    "prisma-dbml-generator": "^0.10.0",
+    "typescript": "^4.7.4"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
