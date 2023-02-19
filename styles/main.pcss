@@ -1012,12 +1012,15 @@ ol {
 .controls input[type="radio"] + .label {
   background: var(--redLinearBtm);
   color: #dedede;
-  width: 20px;
-  /* height: 20px; */
   display: grid;
   place-items: center;
   font-weight: 700;
-  font-size: 0.5rem;
+  font-size: 1.25rem;
+  padding: 8px;
+}
+
+.controls input[type="radio"] + .label svg {
+  scale: 2;
 }
 
 .controls input[type="radio"]:checked + .label,

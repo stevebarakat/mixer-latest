@@ -186,55 +186,49 @@ export default function ChannelStrip({
           />
           <div className="flex gap4">
             <div className="flex controls">
-              <div style={{ position: "relative", width: "100%" }}>
-                <input
-                  type="radio"
-                  id={`${trackIndex}-record`}
-                  name="playback-state"
-                  value="record"
-                  onChange={savePlaybackState}
-                  defaultChecked={
-                    currentTracks[trackIndex].playbackState === "record"
-                  }
-                />
-                <label className="label" htmlFor={`${trackIndex}-record`}>
-                  <div style={{ width: 10 }}>{recordIcon}</div>
-                </label>
-              </div>
+              <input
+                type="radio"
+                id={`${trackIndex}-record`}
+                name="playback-state"
+                value="record"
+                onChange={savePlaybackState}
+                defaultChecked={
+                  currentTracks[trackIndex].playbackState === "record"
+                }
+              />
+              <label className="label" htmlFor={`${trackIndex}-record`}>
+                <div style={{ width: 10 }}>{recordIcon}</div>
+              </label>
             </div>
             <div className="flex controls">
-              <div style={{ position: "relative", width: "100%" }}>
-                <input
-                  type="radio"
-                  id={`${trackIndex}-playback`}
-                  name="playback-state"
-                  value="playback"
-                  onChange={savePlaybackState}
-                  defaultChecked={
-                    currentTracks[trackIndex].playbackState === "playback"
-                  }
-                />
-                <label className="label" htmlFor={`${trackIndex}-playback`}>
-                  <div style={{ width: 10 }}>{earIcon}</div>
-                </label>
-              </div>
+              <input
+                type="radio"
+                id={`${trackIndex}-playback`}
+                name="playback-state"
+                value="playback"
+                onChange={savePlaybackState}
+                defaultChecked={
+                  currentTracks[trackIndex].playbackState === "playback"
+                }
+              />
+              <label className="label" htmlFor={`${trackIndex}-playback`}>
+                <div style={{ width: 10 }}>{earIcon}</div>
+              </label>
             </div>
             <div className="flex controls">
-              <div style={{ position: "relative", width: "100%" }}>
-                <input
-                  type="radio"
-                  id={`${trackIndex}-free`}
-                  name="playback-state"
-                  value="free"
-                  onChange={savePlaybackState}
-                  defaultChecked={
-                    currentTracks[trackIndex].playbackState === "free"
-                  }
-                />
-                <label className="label" htmlFor={`${trackIndex}-free`}>
-                  F
-                </label>
-              </div>
+              <input
+                type="radio"
+                id={`${trackIndex}-free`}
+                name="playback-state"
+                value="free"
+                onChange={savePlaybackState}
+                defaultChecked={
+                  currentTracks[trackIndex].playbackState === "free"
+                }
+              />
+              <label className="label" htmlFor={`${trackIndex}-free`}>
+                F
+              </label>
             </div>
           </div>
           <div className="track-labels">
