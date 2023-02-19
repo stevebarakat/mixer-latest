@@ -192,9 +192,7 @@ export default function ChannelStrip({
                 name="playback-state"
                 value="record"
                 onChange={savePlaybackState}
-                defaultChecked={
-                  currentTracks[trackIndex].playbackState === "record"
-                }
+                checked={currentTrack.playbackState === "record"}
               />
               <label className="label" htmlFor={`${trackIndex}-record`}>
                 <div style={{ width: 10 }}>{recordIcon}</div>
@@ -207,9 +205,7 @@ export default function ChannelStrip({
                 name="playback-state"
                 value="playback"
                 onChange={savePlaybackState}
-                defaultChecked={
-                  currentTracks[trackIndex].playbackState === "playback"
-                }
+                checked={currentTrack.playbackState === "playback"}
               />
               <label className="label" htmlFor={`${trackIndex}-playback`}>
                 <div style={{ width: 10 }}>{earIcon}</div>
@@ -222,15 +218,14 @@ export default function ChannelStrip({
                 name="playback-state"
                 value="free"
                 onChange={savePlaybackState}
-                defaultChecked={
-                  currentTracks[trackIndex].playbackState === "free"
-                }
+                checked={currentTrack.playbackState === "free"}
               />
               <label className="label" htmlFor={`${trackIndex}-free`}>
                 F
               </label>
             </div>
           </div>
+          {playbackState}
           <div className="track-labels">
             <span className="track-name">{track.name}</span>
           </div>
