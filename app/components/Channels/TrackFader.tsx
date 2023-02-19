@@ -33,11 +33,11 @@ function TrackFader({
   }
   return (
     <Fader
+      id={currentTrack?.id}
+      disabled={currentTrack?.playbackState === "playback"}
       channel={channel}
       volume={volume}
       changeVolume={changeVolume}
-      currentTrack={currentTrack}
-      currentTracks={currentTracks}
     />
   );
 }

@@ -2,14 +2,14 @@ import VuMeter from "./VuMeter";
 import useVuMeter from "~/hooks/useVuMeter";
 
 type Props = {
+  id: string;
+  disabled?: boolean;
   channel: Channel | Volume | Destination;
   volume: number;
   changeVolume: (arg: React.ChangeEvent<HTMLInputElement>) => void;
-  currentTrack: TrackSettings;
-  currentTracks: TrackSettings[];
 };
 
-function Fader({ channel, volume, changeVolume, currentTrack }: Props) {
+function Fader({ channel, volume, changeVolume, id, disabled }: Props) {
   const meterVal = useVuMeter([channel]);
 
   return (
@@ -27,8 +27,8 @@ function Fader({ channel, volume, changeVolume, currentTrack }: Props) {
       </div>
       <div className="vol-wrap">
         <input
-          disabled={currentTrack.playbackState === "playback"}
-          id={currentTrack.id}
+          disabled={disabled}
+          id={id}
           className="volume"
           style={{ width: 300, top: 85 }}
           type="range"
@@ -37,7 +37,6 @@ function Fader({ channel, volume, changeVolume, currentTrack }: Props) {
           step={0.1}
           value={volume}
           onChange={changeVolume}
-          // onPointerUp={updateVolume}
         />
       </div>
     </div>

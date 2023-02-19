@@ -2,7 +2,7 @@ import { updateCurrentMix, array as fx } from "~/utils";
 import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import { useMatches } from "@remix-run/react";
-import Fader from "./Fader";
+import BusFader from "./BusFader";
 import { dBToPercent, transpose } from "~/utils/scale";
 
 type Props = {
@@ -26,8 +26,6 @@ function BusReceive({
 
   const currentMix = matches[1].data.currentMix;
   const currentTracks = matches[1].data.currentTracks;
-
-  const [volume, setVolume] = useState(() => currentMix.bussesVolume[busIndex]);
 
   const [disabled, setDisabled] = useState(true);
   const isDisabled = currentTracks.every(
@@ -57,17 +55,6 @@ function BusReceive({
     handleSetBusFxChoices([...busFxChoices]);
 
     return updateCurrentMix({ busFxChoices });
-  }
-
-  function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
-    const id = parseInt(e.currentTarget.id);
-    // setTrackIndex(id);
-    const value = parseFloat(e.currentTarget.value);
-    const transposed = transpose(value);
-    const scaled = dBToPercent(transposed);
-    busChannel.volume.value = scaled;
-    setVolume(value);
-    currentMix.bussesVolume[id] = value;
   }
 
   return (
@@ -108,11 +95,10 @@ function BusReceive({
       </div>
       <div className="fader-wrap">
         <div className="fader-wrap">
-          <Fader
+          <BusFader
             channel={busChannel}
-            volume={volume}
-            changeVolume={changeVolume}
-            currentTrack={currentTracks[busIndex]}
+            index={busIndex}
+            currentMix={currentMix}
           />
         </div>
         <div className="track-labels">
