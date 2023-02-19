@@ -176,6 +176,7 @@ export default function ChannelStrip({
             channel={channel}
           />
           <TrackFader
+            index={trackIndex}
             channel={channel}
             currentTrack={currentTrack}
             currentTracks={currentTracks}
