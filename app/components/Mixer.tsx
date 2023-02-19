@@ -180,6 +180,7 @@ function Mixer({ song }: Props) {
             handleSetTrackFxChoices={handleSetTrackFxChoices}
             playbackState={playbackState}
             setPlaybackState={playbackStateSet}
+            playState={playState}
           />
         ))}
         {busChannels.current.map((busChannel, i) => (
