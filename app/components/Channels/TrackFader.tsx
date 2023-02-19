@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Fader from "./Fader";
 import { dBToPercent, transpose } from "~/utils/scale";
-import { Draw, Transport as t } from "tone";
+import { Destination, Volume, Draw, Loop, Transport as t } from "tone";
 
 type Props = {
   channel: Channel;
@@ -21,6 +21,69 @@ function TrackFader({
   index,
 }: Props) {
   const [volume, setVolume] = useState(() => currentTrack.volume);
+  const loop = useRef<Loop | null>(null);
+
+  /////////////////////
+  // START RECORDING //
+  /////////////////////
+
+  let i = useRef(-0.1);
+  function startRecording(index: number) {
+    const realTimeMixString = localStorage.getItem("realTimeMix");
+    const realTimeMix = realTimeMixString && JSON.parse(realTimeMixString);
+
+    console.log(
+      "currentTracks[index].playbackState[index]",
+      currentTracks[index].playbackState[index]
+    );
+    if (currentTracks[index].playbackState[index] === "record") {
+      console.log("Recording!!!");
+      console.log("index", index);
+      let data: {
+        time: string;
+        0: number;
+        1: number;
+        2: number;
+        3: number;
+      }[] = [];
+
+      loop.current = new Loop(() => {
+        const currentTracksString = localStorage.getItem("currentTracks");
+        const currentTracks =
+          currentTracksString && JSON.parse(currentTracksString);
+        console.log("i.current", Math.round(i.current));
+
+        data.push({
+          time: t.seconds.toFixed(1),
+          0: currentTracks[0].volume,
+          1: currentTracks[1].volume,
+          2: currentTracks[2].volume,
+          3: currentTracks[3].volume,
+        });
+
+        localStorage.setItem(
+          "realTimeMix",
+          JSON.stringify({
+            ...realTimeMix,
+            mix: data,
+          })
+        );
+
+        // fetcher.submit(
+        //   {
+        //     actionName: "saveRealTimeMix",
+        //     realTimeMix: JSON.stringify({
+        //       ...realTimeMix,
+        //       mix: data,
+        //     }),
+        //   },
+        //   { method: "post", action: "/saveMix", replace: true }
+        // );
+
+        i.current = i.current + 0.5;
+      }, 0.1).start();
+    }
+  }
 
   useEffect(() => {
     if (currentTrack.playbackState[index] === "playback") {

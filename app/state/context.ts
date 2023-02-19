@@ -1,2 +1,11 @@
 import { createContext } from "react";
-export const MixerContext = createContext("record");
+
+export type MixerContextType = {
+  playState: string;
+  setPlayState: (arg: string) => void;
+};
+
+export const MixerContext = createContext<MixerContextType>({
+  playState: "stopped",
+  setPlayState: () => {},
+});

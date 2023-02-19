@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
-import { useMatches, useFetcher } from "@remix-run/react";
-import { Destination, Volume, Loop, Transport as t } from "tone";
+import { useMatches } from "@remix-run/react";
+import { Destination, Volume, Transport as t } from "tone";
+// import { MixerContext } from "~/state/context";
 import Controls from "./Transport/Controls";
 import MasterVol from "./Channels/Master";
 import BusReceive from "./Channels/BusReceive";
@@ -19,9 +20,7 @@ type Props = {
 };
 
 function Mixer({ song }: Props) {
-  const fetcher = useFetcher();
   const matches = useMatches();
-  const loop = useRef<Loop | null>(null);
   const tracks = song.tracks;
 
   const busChannels = useRef<Volume[]>([new Volume(), new Volume()]);
@@ -34,6 +33,9 @@ function Mixer({ song }: Props) {
   const currentTracks =
     (currentTracksString && JSON.parse(currentTracksString)) ||
     matches[1].data.currentTracks;
+
+  const [playState, setPlayState] = useState("stopped");
+  const playStateSet = (value: string) => setPlayState(value);
 
   const [playbackState, setPlaybackState] = useState(
     currentTracks.playbackState
@@ -69,71 +71,6 @@ function Mixer({ song }: Props) {
       );
     }
   });
-
-  let i = useRef(-0.1);
-  function startRecording(index: number) {
-    const realTimeMixString = localStorage.getItem("realTimeMix");
-    const realTimeMix = realTimeMixString && JSON.parse(realTimeMixString);
-
-    console.log(
-      "currentTracks[index].playbackState[index]",
-      currentTracks[index].playbackState[index]
-    );
-    if (currentTracks[index].playbackState[index] === "record") {
-      console.log("REcording!!!");
-      let data: {
-        time: string;
-        0: number;
-        1: number;
-        2: number;
-        3: number;
-      }[] = [];
-
-      loop.current = new Loop(() => {
-        const currentTracksString = localStorage.getItem("currentTracks");
-        const currentTracks =
-          currentTracksString && JSON.parse(currentTracksString);
-        console.log("i.current", Math.round(i.current));
-
-        // data[Math.round(i.current)] = {
-        //   time: t.seconds.toFixed(1),
-        //   0: currentTracks[0].volume,
-        //   1: currentTracks[1].volume,
-        //   2: currentTracks[2].volume,
-        //   3: currentTracks[3].volume,
-        // };
-
-        data.push({
-          time: t.seconds.toFixed(1),
-          0: currentTracks[0].volume,
-          1: currentTracks[1].volume,
-          2: currentTracks[2].volume,
-          3: currentTracks[3].volume,
-        });
-
-        localStorage.setItem(
-          "realTimeMix",
-          JSON.stringify({
-            ...realTimeMix,
-            mix: data,
-          })
-        );
-
-        // fetcher.submit(
-        //   {
-        //     actionName: "saveRealTimeMix",
-        //     realTimeMix: JSON.stringify({
-        //       ...realTimeMix,
-        //       mix: data,
-        //     }),
-        //   },
-        //   { method: "post", action: "/saveMix", replace: true }
-        // );
-
-        i.current = i.current + 0.5;
-      }, 0.1).start();
-    }
-  }
 
   function rewind() {
     if (t.seconds < song.start!) {
@@ -198,6 +135,7 @@ function Mixer({ song }: Props) {
     </div>
   ) : (
     <div className="console">
+      {/* <MixerContext.Provider value={{ playState, setPlayState: playStateSet }}> */}
       <div className="fx-panels-wrap">
         {busFxControls.map((control: any, j: number) => {
           const noControls = control.every((bool: boolean) => bool === null);
@@ -288,14 +226,17 @@ function Mixer({ song }: Props) {
           })}
         </div>
       </div>
+      {/* </MixerContext.Provider> */}
 
       <div className="flex">
         <div className="controls flex gap8 pt8">
           <Controls
             song={song}
             rewind={rewind}
-            startRecording={startRecording}
+            // startRecording={startRecording}
             playbackState={playbackState}
+            playState={playState}
+            setPlayState={playStateSet}
           />
         </div>
       </div>

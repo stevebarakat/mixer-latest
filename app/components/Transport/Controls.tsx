@@ -10,11 +10,19 @@ import useKeys from "~/hooks/useKeyPress";
 type Props = {
   song: Song;
   rewind: () => void;
-  startRecording: (arg: number) => void;
+  // startRecording: (arg: number) => void;
   playbackState: string[];
+  playState: string;
+  setPlayState: (arg: string) => void;
 };
 
-function Controls({ song, rewind, startRecording, playbackState }: Props) {
+function Controls({
+  song,
+  rewind,
+  playbackState,
+  playState,
+  setPlayState,
+}: Props) {
   const [isStarted, setStarted] = useState(false);
   const keys = useKeys();
 
@@ -57,8 +65,10 @@ function Controls({ song, rewind, startRecording, playbackState }: Props) {
         <Rewind song={song} rewind={rewind} />
         <Play
           song={song}
-          startRecording={startRecording}
-          playbackState={playbackState}
+          // startRecording={startRecording}
+          // playbackState={playbackState}
+          playState={playState}
+          setPlayState={setPlayState}
         />
         <FastFwd song={song} />
       </div>
