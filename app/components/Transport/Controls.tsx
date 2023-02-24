@@ -11,7 +11,7 @@ type Props = {
   song: Song;
   rewind: () => void;
   // startRecording: (arg: number) => void;
-  playbackState: string[];
+  playbackState: string;
   playState: string;
   setPlayState: (arg: string) => void;
 };

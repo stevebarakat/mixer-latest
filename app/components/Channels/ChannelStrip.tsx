@@ -21,8 +21,8 @@ type Props = {
   toggleBus: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSetTrackFxOpen: (value: boolean[]) => void;
   handleSetTrackFxChoices: (arg: string[][]) => void;
-  playbackState: string[];
-  setPlaybackState: (arg: string[]) => void;
+  playbackState: string;
+  setPlaybackState: (arg: string) => void;
   playState: string;
 };
 
@@ -70,7 +70,7 @@ export default function ChannelStrip({
     return updateCurrentMix({ trackFxChoices });
   }
 
-  const saveMix = (index: number, playbackState: string[]) => {
+  const saveMix = (index: number, playbackState: string) => {
     const currentTracksString = localStorage.getItem("currentTracks");
     const currentTracksParsed =
       currentTracksString && JSON.parse(currentTracksString);
@@ -98,7 +98,7 @@ export default function ChannelStrip({
     const trackIndex = parseInt(target.id[0], 10);
     console.log("trackIndex", trackIndex);
 
-    currentTracks[trackIndex].playbackState[trackIndex] = target.value;
+    currentTracks[trackIndex].playbackState = target.value;
 
     localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
 
@@ -194,7 +194,7 @@ export default function ChannelStrip({
                 name={`${trackIndex}-playbackState`}
                 value="record"
                 onChange={savePlaybackState}
-                checked={currentTrack.playbackState[trackIndex] === "record"}
+                checked={currentTrack.playbackState === "record"}
               />
               <label className="label" htmlFor={`${trackIndex}-record`}>
                 <div style={{ width: 10 }}>{recordIcon}</div>
@@ -207,7 +207,7 @@ export default function ChannelStrip({
                 name={`${trackIndex}-playbackState`}
                 value="playback"
                 onChange={savePlaybackState}
-                checked={currentTrack.playbackState[trackIndex] === "playback"}
+                checked={currentTrack.playbackState === "playback"}
               />
               <label className="label" htmlFor={`${trackIndex}-playback`}>
                 <div style={{ width: 10 }}>{earIcon}</div>
@@ -220,16 +220,14 @@ export default function ChannelStrip({
                 name={`${trackIndex}-playbackState`}
                 value="free"
                 onChange={savePlaybackState}
-                checked={currentTrack.playbackState[trackIndex] === "free"}
+                checked={currentTrack.playbackState === "free"}
               />
               <label className="label" htmlFor={`${trackIndex}-free`}>
                 F
               </label>
             </div>
           </div>
-          <span style={{ color: "#232323" }}>
-            {currentTrack.playbackState[trackIndex]}
-          </span>
+          <span style={{ color: "#232323" }}>{currentTrack.playbackState}</span>
           <div className="track-labels">
             <span className="track-name">{track.name}</span>
           </div>

@@ -8,7 +8,7 @@ type Props = {
   currentTrack: TrackSettings;
   currentTracks: TrackSettings[];
   isMuted: boolean;
-  playbackState: string[];
+  playbackState: string;
   playState: string;
   index: number;
 };
