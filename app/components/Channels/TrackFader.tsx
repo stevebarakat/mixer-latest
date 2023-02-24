@@ -58,15 +58,18 @@ function TrackFader({
           const currentTracks =
             currentTracksString && JSON.parse(currentTracksString);
           console.log("i.current", Math.round(i.current));
+          console.log("t.seconds", t.seconds);
 
           const ubu = Object.assign({}, currentTracks);
 
           console.log("ubu", ubu);
 
-          data.push({
-            time: t.seconds.toFixed(1),
-            ...ubu,
-          });
+          // data.push({
+          //   time: t.seconds.toFixed(1),
+          //   ...ubu,
+          // });
+
+          data = [{ time: t.seconds.toFixed(1), ...ubu }, ...data];
 
           localStorage.setItem(
             "realTimeMix",
@@ -107,10 +110,12 @@ function TrackFader({
         }
       });
     }
+    i.current = 0;
   }, [currentTracks, playState]);
 
   useEffect(() => {
-    if (currentTrack.playbackState[index] === "playback") {
+    if (currentTrack.playbackState === "playback") {
+      i.current = 0;
       console.log("drawing!");
       const rtmString = localStorage.getItem("realTimeMix");
       const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
@@ -118,6 +123,7 @@ function TrackFader({
       realTimeMix.mix?.map((mix) => {
         return t.schedule((time) => {
           Draw.schedule(() => {
+            channel.volume.value = volume;
             const transposed = transpose(mix[`${index}`].volume);
             const scaled = dBToPercent(transposed);
             return setVolume(scaled);
@@ -126,19 +132,25 @@ function TrackFader({
       });
     }
     return () => {
-      if (currentTracks[index].playbackState[index] === "playback") {
+      if (currentTracks[index].playbackState === "playback") {
         Draw.dispose();
       }
     };
-  }, [currentTrack.playbackState, currentTracks, index]);
+  }, [
+    currentTrack.playbackState,
+    currentTracks,
+    index,
+    volume,
+    channel.volume,
+  ]);
 
-  useEffect(() => {
-    if (currentTracks[index].playbackState[index] === "playback")
-      channel.volume.value = volume;
-  }, [volume, channel.volume, currentTracks, index]);
+  // useEffect(() => {
+  //   if (currentTracks[index].playbackState === "playback")
+  //     channel.volume.value = volume;
+  // }, [volume, channel.volume, currentTracks, index]);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
-    if (currentTracks[index].playbackState[index] !== "playback") {
+    if (currentTracks[index].playbackState !== "playback") {
       if (isMuted) return;
       const value = parseFloat(e.currentTarget.value);
       const transposed = transpose(value);
@@ -152,7 +164,7 @@ function TrackFader({
   return (
     <Fader
       id={currentTrack?.id}
-      disabled={currentTrack?.playbackState[index] === "playback"}
+      disabled={currentTrack.playbackState === "playback"}
       channel={channel}
       volume={volume}
       changeVolume={changeVolume}

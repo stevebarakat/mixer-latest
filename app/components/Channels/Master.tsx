@@ -8,15 +8,11 @@ type Props = {
 
 function Master({ index, channel }: Props) {
   const matches = useMatches();
-  const currentTracks = matches[1].data.currentTracks;
+  const currentMix = matches[1].data.currentMix;
 
   return (
     <div className="fader-wrap">
-      <MasterFader
-        channel={channel}
-        currentTrack={currentTracks[index]}
-        currentTracks={currentTracks}
-      />
+      <MasterFader channel={channel} currentMix={currentMix} />
       <div className="track-labels">
         <span className="track-name">Master</span>
       </div>

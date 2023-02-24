@@ -4,12 +4,11 @@ import Fader from "./Fader";
 
 type Props = {
   channel: Destination;
-  currentTrack: TrackSettings;
-  currentTracks: TrackSettings[];
+  currentMix: MixSettings;
 };
 
-function MasterFader({ channel, currentTrack, currentTracks }: Props) {
-  const [volume, setVolume] = useState(() => currentTrack.volume);
+function MasterFader({ channel, currentMix }: Props) {
+  const [volume, setVolume] = useState(() => currentMix.masterVolume);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
     const value = parseFloat(e.currentTarget.value);
@@ -17,13 +16,12 @@ function MasterFader({ channel, currentTrack, currentTracks }: Props) {
     const scaled = dBToPercent(transposed);
     channel.volume.value = scaled;
     setVolume(value);
-    currentTrack.volume = value;
-    localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
+    currentMix.masterVolume = value;
+    localStorage.setItem("currentMix", JSON.stringify(currentMix));
   }
   return (
     <Fader
-      id={currentTrack?.id}
-      disabled={currentTrack?.playbackState === "playback"}
+      id={currentMix.id}
       channel={channel}
       volume={volume}
       changeVolume={changeVolume}
