@@ -59,12 +59,13 @@ function TrackFader({
             currentTracksString && JSON.parse(currentTracksString);
           console.log("i.current", Math.round(i.current));
 
+          const ubu = Object.assign({}, currentTracks);
+
+          console.log("ubu", ubu);
+
           data.push({
             time: t.seconds.toFixed(1),
-            0: currentTracks[0].volume,
-            1: currentTracks[1].volume,
-            2: currentTracks[2].volume,
-            3: currentTracks[3].volume,
+            ...ubu,
           });
 
           localStorage.setItem(
@@ -117,7 +118,7 @@ function TrackFader({
       realTimeMix.mix?.map((mix) => {
         return t.schedule((time) => {
           Draw.schedule(() => {
-            const transposed = transpose(mix[`${index}`]);
+            const transposed = transpose(mix[`${index}`].volume);
             const scaled = dBToPercent(transposed);
             return setVolume(scaled);
           }, time);
