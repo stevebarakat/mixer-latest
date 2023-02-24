@@ -39,10 +39,10 @@ function TrackFader({
       const realTimeMix = realTimeMixString && JSON.parse(realTimeMixString);
 
       console.log(
-        "currentTracks[index].playbackState[index]",
-        currentTracks[index].playbackState[index]
+        "currentTracks[index].playbackState",
+        currentTracks[index].playbackState
       );
-      if (currentTracks[index].playbackState[index] === "record") {
+      if (currentTracks[index].playbackState === "record") {
         console.log("Recording!!!");
         console.log("index", index);
         let data: {
@@ -95,14 +95,14 @@ function TrackFader({
     if (playState === "started") {
       const indices = currentTracks.reduce(
         (r: [], v: TrackSettings, i: any) => {
-          console.log("v.playbackState[i]", v.playbackState[i]);
-          return r.concat(v.playbackState[i] === "record" ? i : []);
+          console.log("v.playbackState", v.playbackState);
+          return r.concat(v.playbackState === "record" ? i : []);
         },
         []
       );
       console.log("indices", indices);
       currentTracks.forEach((currentTrack: TrackSettings, i: number) => {
-        if (currentTrack.playbackState[i] === "record") {
+        if (currentTrack.playbackState === "record") {
           indices.forEach((index: number) => startRecording(index));
         }
       });
