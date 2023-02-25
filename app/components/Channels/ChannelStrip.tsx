@@ -1,5 +1,5 @@
-import { updateCurrentMix, array as fx } from "~/utils";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { array as fx } from "~/utils";
 import { useFetcher } from "@remix-run/react";
 import type { FormEvent } from "react";
 import Pan from "./Pan";
@@ -21,7 +21,6 @@ type Props = {
   toggleBus: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSetTrackFxOpen: (value: boolean[]) => void;
   handleSetTrackFxChoices: (arg: string[][]) => void;
-  playbackState: string;
   setPlaybackState: (arg: string) => void;
   playState: string;
 };
@@ -38,7 +37,6 @@ export default function ChannelStrip({
   handleSetTrackFxChoices,
   trackFxOpen,
   handleSetTrackFxOpen,
-  playbackState,
   setPlaybackState,
   playState,
 }: Props) {
@@ -59,16 +57,26 @@ export default function ChannelStrip({
     return trackFxChoices[trackIndex][i] === "";
   });
 
-  function selectFx(
-    e: FormEvent<HTMLSelectElement>,
-    busIndex: number,
-    fxIndex: number
-  ) {
-    trackFxChoices[busIndex][fxIndex] = e.currentTarget.value;
-    handleSetTrackFxChoices([...trackFxChoices]);
+  // function selectFx(
+  //   e: FormEvent<HTMLSelectElement>,
+  //   busIndex: number,
+  //   fxIndex: number
+  // ) {
+  //   trackFxChoices[busIndex][fxIndex] = e.currentTarget.value;
+  //   handleSetTrackFxChoices([...trackFxChoices]);
 
-    return updateCurrentMix({ trackFxChoices });
-  }
+  //   return updateCurrentMix({ trackFxChoices });
+  // }
+  const tempFxChoices = useRef<string[][] | null>(null);
+  const selectFx = (e: FormEvent<HTMLSelectElement>, j: number, i: number) => {
+    handleSetTrackFxChoices((currentFxChoices: string[][]) => {
+      tempFxChoices.current = currentFxChoices.map((each: string[]) => [
+        ...each,
+      ]);
+      tempFxChoices.current![j][i] = e.currentTarget.value;
+      return tempFxChoices.current;
+    });
+  };
 
   const saveMix = (index: number, playbackState: string) => {
     const currentTracksString = localStorage.getItem("currentTracks");
@@ -183,7 +191,6 @@ export default function ChannelStrip({
             currentTrack={currentTrack}
             currentTracks={currentTracks}
             isMuted={isMuted}
-            playbackState={playbackState}
             playState={playState}
           />
           <div className="flex gap4">

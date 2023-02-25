@@ -14,6 +14,7 @@ import useToggleFxPanel from "~/hooks/useToggleFxPanel";
 import useChannelStrip from "~/hooks/useChannelStrip";
 import Draggable from "~/components/Draggable";
 import { xIcon } from "~/assets/xIcon";
+import { v4 as uuid } from "uuid";
 
 type Props = {
   song: Source;
@@ -41,7 +42,7 @@ function Mixer({ song }: Props) {
   const [playbackState, setPlaybackState] = useState(
     currentTracks.playbackState
   );
-  const playbackStateSet = (value: string[]) => setPlaybackState(value);
+  const playbackStateSet = (value: string) => setPlaybackState(value);
 
   const [busFxOpen, setBusFxOpen] = useState([true, true]);
   const handleSetBusFxOpen = (value: boolean[]) => setBusFxOpen(value);
@@ -152,7 +153,7 @@ function Mixer({ song }: Props) {
           if (noControls) return null;
           return (
             <Draggable
-              key={j}
+              key={uuid()}
               className={busFxOpen[j] ? "panel open" : "panel closed"}
             >
               <button
@@ -188,7 +189,6 @@ function Mixer({ song }: Props) {
             handleSetTrackFxOpen={handleSetTrackFxOpen}
             trackFxChoices={trackFxChoices}
             handleSetTrackFxChoices={handleSetTrackFxChoices}
-            playbackState={playbackState}
             setPlaybackState={playbackStateSet}
             playState={playState}
           />
@@ -214,7 +214,7 @@ function Mixer({ song }: Props) {
 
             return (
               <Draggable
-                key={j}
+                key={uuid()}
                 className={trackFxOpen[j] ? "panel open" : "panel closed"}
               >
                 <button

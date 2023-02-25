@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Fader from "./Fader";
 import { dBToPercent, transpose } from "~/utils/scale";
 import { Destination, Volume, Draw, Loop, Transport as t } from "tone";
@@ -8,7 +8,6 @@ type Props = {
   currentTrack: TrackSettings;
   currentTracks: TrackSettings[];
   isMuted: boolean;
-  playbackState: string;
   playState: string;
   index: number;
 };
@@ -18,7 +17,6 @@ function TrackFader({
   currentTrack,
   currentTracks,
   isMuted,
-  playbackState,
   playState,
   index,
 }: Props) {
@@ -72,7 +70,7 @@ function TrackFader({
         localStorage.setItem(
           "realTimeMix",
           JSON.stringify({
-            mix: [data][0],
+            mix: data,
           })
         );
 
@@ -86,12 +84,12 @@ function TrackFader({
         //   },
         //   { method: "post", action: "/saveMix", replace: true }
         // );
-      }, 0.1).start();
+      }, 0.25).start();
     }
 
     if (playState === "started") {
       const indices = currentTracks.reduce(
-        (r: [], v: TrackSettings, i: any) => {
+        (r: string[], v: TrackSettings, i: any) => {
           console.log("v.playbackState", v.playbackState);
           return r.concat(v.playbackState === "record" ? i : []);
         },
@@ -99,7 +97,7 @@ function TrackFader({
       );
       console.log("indices", indices);
       if (currentTrack.playbackState === "record") {
-        indices.forEach((index: number) => startRecording(index));
+        indices.forEach((index: string) => startRecording(parseInt(index, 10)));
       }
     }
   }, [playState, currentTrack, currentTracks]);
@@ -108,8 +106,7 @@ function TrackFader({
   // START PLAYBACK //
   /////////////////////
 
-  useEffect(() => {
-    if (currentTrack.playbackState !== "playback") return;
+  const startPlayback = useCallback(() => {
     const rtmString = localStorage.getItem("realTimeMix");
     const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
@@ -124,13 +121,24 @@ function TrackFader({
         }, time);
       }, mix.time);
     });
+  }, [volume, channel.volume, index]);
+
+  useEffect(() => {
+    if (currentTrack.playbackState !== "playback") return;
+    startPlayback();
 
     return () => {
       if (currentTrack.playbackState === "playback") {
         Draw.dispose();
       }
     };
-  }, [currentTrack.playbackState, index, volume, channel.volume]);
+  }, [
+    currentTrack.playbackState,
+    startPlayback,
+    index,
+    volume,
+    channel.volume,
+  ]);
 
   useEffect(() => {
     if (currentTrack.playbackState === "free") return;
