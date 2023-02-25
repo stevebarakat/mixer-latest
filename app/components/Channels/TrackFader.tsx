@@ -116,10 +116,11 @@ function TrackFader({
     realTimeMix.mix?.map((mix) => {
       return t.schedule((time) => {
         Draw.schedule(() => {
-          channel.volume.value = volume;
+          channel.volume.value = volume[index];
           const transposed = transpose(mix[`${index}`].volume);
           const scaled = dBToPercent(transposed);
-          return setVolume(scaled);
+          volume[index] = scaled;
+          return setVolume([...volume]);
         }, time);
       }, mix.time);
     });
