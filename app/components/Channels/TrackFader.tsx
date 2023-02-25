@@ -25,8 +25,6 @@ function TrackFader({
   const [volume, setVolume] = useState(() => currentTrack.volume);
   const loop = useRef<Loop | null>(null);
 
-  let i = useRef(-0.1);
-
   console.log("playstate", playState);
 
   useEffect(() => {
@@ -67,14 +65,12 @@ function TrackFader({
           // console.log("data", data);
           // console.log("index", index);
           // console.log("data[index][0]", data[index][0]);
-          console.log("currentTrack.index", currentTrack.index);
-
-          console.log("data[currentTrack.index]", data[currentTrack.index]);
+          // console.log("currentTrack.index", currentTrack.index);
 
           localStorage.setItem(
             "realTimeMix",
             JSON.stringify({
-              mix: [data][currentTrack.index],
+              mix: [data][0],
             })
           );
 
@@ -88,8 +84,6 @@ function TrackFader({
           //   },
           //   { method: "post", action: "/saveMix", replace: true }
           // );
-
-          i.current = i.current + 0.5;
         }, 0.1).start();
       }
     }
@@ -109,12 +103,14 @@ function TrackFader({
         }
       });
     }
-    i.current = 0;
-  }, [currentTracks, playState]);
+  }, [currentTracks, playState, currentTrack.index]);
+
+  /////////////////////
+  // START PLAYBACK //
+  /////////////////////
 
   useEffect(() => {
     if (currentTrack.playbackState === "playback") {
-      i.current = 0;
       console.log("drawing!");
       const rtmString = localStorage.getItem("realTimeMix");
       const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
