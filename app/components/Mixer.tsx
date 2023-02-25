@@ -22,7 +22,8 @@ type Props = {
 function Mixer({ song }: Props) {
   const matches = useMatches();
   const tracks = song.tracks;
-
+  // const volumes = Array(tracks.length).fill(-32);
+  // localStorage.setItem("volumes", JSON.stringify(volumes));
   const busChannels = useRef<Volume[]>([new Volume(), new Volume()]);
 
   const currentMixString = localStorage.getItem("currentMix");
@@ -71,6 +72,15 @@ function Mixer({ song }: Props) {
       );
     }
   });
+
+  (function init() {
+    const vols = JSON.parse(localStorage.getItem("volumes")!);
+    if (vols === null) {
+      return Array(tracks.length).fill(-32);
+    } else {
+      return vols;
+    }
+  })();
 
   function rewind() {
     if (t.seconds < song.start!) {
