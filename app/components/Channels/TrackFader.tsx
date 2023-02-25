@@ -33,59 +33,55 @@ function TrackFader({
     /////////////////////
 
     function startRecording(index: number) {
-      const realTimeMixString = localStorage.getItem("realTimeMix");
-      const realTimeMix = realTimeMixString && JSON.parse(realTimeMixString);
-
       console.log("currentTracks[index]", currentTracks[index]);
-      if (currentTracks[index].playbackState === "record") {
-        console.log("Recording!!!");
-        console.log("index", index);
-        let data: {
-          time: string;
-          0: number;
-          1: number;
-          2: number;
-          3: number;
-        }[] = [];
+      if (currentTracks[index].playbackState !== "record") return;
+      console.log("Recording!!!");
+      console.log("index", index);
+      let data: {
+        time: string;
+        0: number;
+        1: number;
+        2: number;
+        3: number;
+      }[] = [];
 
-        loop.current = new Loop(() => {
-          const currentTracksString = localStorage.getItem("currentTracks");
-          const currentTracks =
-            currentTracksString && JSON.parse(currentTracksString);
+      loop.current = new Loop(() => {
+        const currentTracksString = localStorage.getItem("currentTracks");
+        const currentTracks =
+          currentTracksString && JSON.parse(currentTracksString);
 
-          const ubu = Object.assign({}, currentTracks);
+        const ubu = Object.assign({}, currentTracks);
 
-          // data.push({
-          //   time: t.seconds.toFixed(1),
-          //   ...ubu,
-          // });
+        // data.push({
+        //   time: t.seconds.toFixed(1),
+        //   ...ubu,
+        // });
 
-          data = [{ time: t.seconds.toFixed(1), ...ubu }, ...data];
+        data = [{ time: t.seconds.toFixed(1), ...ubu }, ...data];
 
-          // console.log("data", data);
-          // console.log("index", index);
-          // console.log("data[index][0]", data[index][0]);
-          // console.log("currentTrack.index", currentTrack.index);
+        // console.log("data", data);
+        // console.log("index", index);
+        // console.log("data[index][0]", data[index][0]);
+        // console.log("currentTrack.index", currentTrack.index);
 
-          localStorage.setItem(
-            "realTimeMix",
-            JSON.stringify({
-              mix: [data][0],
-            })
-          );
+        localStorage.setItem(
+          "realTimeMix",
+          JSON.stringify({
+            mix: [data][0],
+          })
+        );
 
-          // fetcher.submit(
-          //   {
-          //     actionName: "saveRealTimeMix",
-          //     realTimeMix: JSON.stringify({
-          //       ...realTimeMix,
-          //       mix: data,
-          //     }),
-          //   },
-          //   { method: "post", action: "/saveMix", replace: true }
-          // );
-        }, 0.1).start();
-      }
+        // fetcher.submit(
+        //   {
+        //     actionName: "saveRealTimeMix",
+        //     realTimeMix: JSON.stringify({
+        //       ...realTimeMix,
+        //       mix: data,
+        //     }),
+        //   },
+        //   { method: "post", action: "/saveMix", replace: true }
+        // );
+      }, 0.1).start();
     }
 
     if (playState === "started") {
@@ -97,55 +93,45 @@ function TrackFader({
         []
       );
       console.log("indices", indices);
-      currentTracks.forEach((currentTrack: TrackSettings, i: number) => {
-        if (currentTrack.playbackState === "record") {
-          indices.forEach((index: number) => startRecording(index));
-        }
-      });
+      if (currentTrack.playbackState === "record") {
+        indices.forEach((index: number) => startRecording(index));
+      }
     }
-  }, [currentTracks, playState, currentTrack.index]);
+  }, [playState, currentTrack, currentTracks]);
 
   /////////////////////
   // START PLAYBACK //
   /////////////////////
 
   useEffect(() => {
-    if (currentTrack.playbackState === "playback") {
-      console.log("drawing!");
-      const rtmString = localStorage.getItem("realTimeMix");
-      const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
+    if (currentTrack.playbackState !== "playback") return;
+    const rtmString = localStorage.getItem("realTimeMix");
+    const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
-      realTimeMix.mix?.map((mix) => {
-        return t.schedule((time) => {
-          Draw.schedule(() => {
-            channel.volume.value = volume;
-            const transposed = transpose(mix[`${index}`].volume);
-            const scaled = dBToPercent(transposed);
-            return setVolume(scaled);
-          }, time);
-        }, mix.time);
-      });
-    }
+    realTimeMix.mix?.map((mix) => {
+      return t.schedule((time) => {
+        Draw.schedule(() => {
+          channel.volume.value = volume;
+          const transposed = transpose(mix[`${index}`].volume);
+          const scaled = dBToPercent(transposed);
+          return setVolume(scaled);
+        }, time);
+      }, mix.time);
+    });
+
     return () => {
-      if (currentTracks[index].playbackState === "playback") {
+      if (currentTrack.playbackState === "playback") {
         Draw.dispose();
       }
     };
-  }, [
-    currentTrack.playbackState,
-    currentTracks,
-    index,
-    volume,
-    channel.volume,
-  ]);
+  }, [currentTrack.playbackState, index, volume, channel.volume]);
 
-  // useEffect(() => {
-  //   if (currentTracks[index].playbackState === "playback")
-  //     channel.volume.value = volume;
-  // }, [volume, channel.volume, currentTracks, index]);
+  useEffect(() => {
+    if (currentTrack.playbackState === "free") return;
+  }, [currentTrack, index]);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
-    if (currentTracks[index].playbackState !== "playback") {
+    if (currentTrack.playbackState !== "playback") {
       if (isMuted) return;
       const value = parseFloat(e.currentTarget.value);
       const transposed = transpose(value);
