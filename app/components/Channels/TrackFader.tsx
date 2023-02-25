@@ -64,12 +64,17 @@ function TrackFader({
 
           data = [{ time: t.seconds.toFixed(1), ...ubu }, ...data];
 
-          console.log("data", data);
+          // console.log("data", data);
+          // console.log("index", index);
+          // console.log("data[index][0]", data[index][0]);
+          console.log("currentTrack.index", currentTrack.index);
+
+          console.log("data[currentTrack.index]", data[currentTrack.index]);
 
           localStorage.setItem(
             "realTimeMix",
             JSON.stringify({
-              mix: data,
+              mix: [data][currentTrack.index],
             })
           );
 
