@@ -73,6 +73,7 @@ model MixSettings {
 
 model TrackSettings {
   id                   String      @id @default(uuid())
+  index                Int         @default(0)
   position             Int         @default(autoincrement())
   mixName              String
   mixSettings          MixSettings @relation(fields: [mixSettingsId], references: [id], onDelete: Cascade)

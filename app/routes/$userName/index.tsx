@@ -82,9 +82,10 @@ export let action: ActionFunction = async ({ request }) => {
     },
   });
 
-  sourceSong?.tracks.forEach(async (trackSettings) => {
+  sourceSong?.tracks.forEach(async (trackSettings, i) => {
     await db.trackSettings.create({
       data: {
+        index: i,
         userId: sessionUser.id,
         trackSettingsId: trackSettings.id,
         mixSettingsId: mixSettings.id,

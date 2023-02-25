@@ -65,6 +65,7 @@ Table MixSettings {
 
 Table TrackSettings {
   id String [pk]
+  index Int [not null, default: 0]
   position Int [increment, not null]
   mixName String [not null]
   mixSettings MixSettings [not null]

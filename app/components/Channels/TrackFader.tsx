@@ -38,10 +38,7 @@ function TrackFader({
       const realTimeMixString = localStorage.getItem("realTimeMix");
       const realTimeMix = realTimeMixString && JSON.parse(realTimeMixString);
 
-      console.log(
-        "currentTracks[index].playbackState",
-        currentTracks[index].playbackState
-      );
+      console.log("currentTracks[index]", currentTracks[index]);
       if (currentTracks[index].playbackState === "record") {
         console.log("Recording!!!");
         console.log("index", index);
@@ -57,12 +54,8 @@ function TrackFader({
           const currentTracksString = localStorage.getItem("currentTracks");
           const currentTracks =
             currentTracksString && JSON.parse(currentTracksString);
-          console.log("i.current", Math.round(i.current));
-          console.log("t.seconds", t.seconds);
 
           const ubu = Object.assign({}, currentTracks);
-
-          console.log("ubu", ubu);
 
           // data.push({
           //   time: t.seconds.toFixed(1),
@@ -71,10 +64,11 @@ function TrackFader({
 
           data = [{ time: t.seconds.toFixed(1), ...ubu }, ...data];
 
+          console.log("data", data);
+
           localStorage.setItem(
             "realTimeMix",
             JSON.stringify({
-              ...realTimeMix,
               mix: data,
             })
           );
