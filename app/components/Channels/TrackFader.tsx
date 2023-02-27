@@ -12,7 +12,12 @@ type Props = {
   index: number;
   setIsRewinding: (arg: boolean) => void;
   isRewinding: boolean;
-  rewind: (time: number, track: string, playbackMode: string) => void;
+  rewind: (
+    time: number,
+    track: string,
+    playbackMode: string,
+    loop: Loop
+  ) => void;
   loop: React.MutableRefObject<Loop>;
 };
 
