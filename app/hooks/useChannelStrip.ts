@@ -48,7 +48,8 @@ function useChannelStrip({
             Destination
           );
         } else {
-          players.current[j].chain(channels.current[j]);
+          // may have to remove Destination
+          players.current[j].chain(channels.current[j], Destination);
         }
       }
     });
