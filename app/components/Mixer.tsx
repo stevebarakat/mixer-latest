@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { useMatches } from "@remix-run/react";
 import { Destination, Volume, Transport as t } from "tone";
-// import { MixerContext } from "~/state/context";
 import Controls from "./Transport/Controls";
 import MasterVol from "./Channels/Master";
 import BusReceive from "./Channels/BusReceive";
@@ -23,8 +22,6 @@ type Props = {
 function Mixer({ song }: Props) {
   const matches = useMatches();
   const tracks = song.tracks;
-  // const volumes = Array(tracks.length).fill(-32);
-  // localStorage.setItem("volumes", JSON.stringify(volumes));
   const busChannels = useRef<Volume[]>([new Volume(), new Volume()]);
 
   const currentMixString = localStorage.getItem("currentMix");
@@ -137,7 +134,6 @@ function Mixer({ song }: Props) {
     </div>
   ) : (
     <div className="console">
-      {/* <MixerContext.Provider value={{ playState, setPlayState: playStateSet }}> */}
       <div className="fx-panels-wrap">
         {busFxControls.map((control: any, j: number) => {
           const noControls = control.every((bool: boolean) => bool === null);
@@ -228,14 +224,12 @@ function Mixer({ song }: Props) {
           })}
         </div>
       </div>
-      {/* </MixerContext.Provider> */}
 
       <div className="flex">
         <div className="controls flex gap8 pt8">
           <Controls
             song={song}
             rewind={rewind}
-            // startRecording={startRecording}
             playbackState={playbackState}
             playState={playState}
             setPlayState={playStateSet}
