@@ -53,7 +53,7 @@ export const action: ActionFunction = async ({ request }) => {
               id: track.id,
             },
             data: {
-              playbackState: track.playbackState,
+              playbackMode: track.playbackMode,
               volume: track.volume,
               solo: track.solo,
               mute: track.mute,

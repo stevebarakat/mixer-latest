@@ -39,9 +39,7 @@ function Mixer({ song }: Props) {
   const [playState, setPlayState] = useState("stopped");
   const playStateSet = (value: string) => setPlayState(value);
 
-  const [playbackState, setPlaybackState] = useState(
-    currentTracks.playbackState
-  );
+  const [playbackMode, setPlaybackState] = useState(currentTracks.playbackMode);
   const playbackStateSet = (value: string) => setPlaybackState(value);
 
   const [busFxOpen, setBusFxOpen] = useState([true, true]);
@@ -81,7 +79,7 @@ function Mixer({ song }: Props) {
       t.seconds = t.seconds - 5;
     }
     // loop.current?.stop();
-    if (playbackState === "record") {
+    if (playbackMode === "record") {
       t.cancel();
       t.start();
       const realTimeMixString = localStorage.getItem("realTimeMix");

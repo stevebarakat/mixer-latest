@@ -84,17 +84,14 @@ export default function ChannelStrip({
     });
   };
 
-  const saveMix = (index: number, playbackState: string) => {
+  const saveMix = (index: number, playbackMode: string) => {
     const currentTracksString = localStorage.getItem("currentTracks");
     const currentTracksParsed =
       currentTracksString && JSON.parse(currentTracksString);
 
-    console.log(
-      "currentTracksParsed",
-      currentTracksParsed[index].playbackState
-    );
+    console.log("currentTracksParsed", currentTracksParsed[index].playbackMode);
 
-    currentTracksParsed[index].playbackState = playbackState;
+    currentTracksParsed[index].playbackMode = playbackMode;
 
     const currentTracks = JSON.stringify(currentTracksParsed);
     fetcher.submit(
@@ -112,18 +109,18 @@ export default function ChannelStrip({
     const trackIndex = parseInt(target.id[0], 10);
     console.log("trackIndex", trackIndex);
 
-    currentTracks[trackIndex].playbackState = target.value;
+    currentTracks[trackIndex].playbackMode = target.value;
 
     localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
 
-    setPlaybackState(currentTracks[trackIndex].playbackState);
-    saveMix(trackIndex, currentTracks[trackIndex].playbackState);
+    setPlaybackState(currentTracks[trackIndex].playbackMode);
+    saveMix(trackIndex, currentTracks[trackIndex].playbackMode);
 
     console.log(
-      "currentTracks[trackIndex].playbackState",
-      currentTracks[trackIndex].playbackState
+      "currentTracks[trackIndex].playbackMode",
+      currentTracks[trackIndex].playbackMode
     );
-    // if (currentTracks[trackIndex].playbackState === "record") {
+    // if (currentTracks[trackIndex].playbackMode === "record") {
     //   fetcher.submit(
     //     {
     //       actionName: "saveRealTimeMix",
@@ -135,7 +132,7 @@ export default function ChannelStrip({
     // window.location.reload();
   }
 
-  console.log("currentTrack.playbackState", currentTrack.playbackState);
+  console.log("currentTrack.playbackMode", currentTrack.playbackMode);
 
   return (
     <div className="channel">
@@ -207,10 +204,10 @@ export default function ChannelStrip({
               <input
                 type="radio"
                 id={`${trackIndex}-record`}
-                name={`${trackIndex}-playbackState`}
+                name={`${trackIndex}-playbackMode`}
                 value="record"
                 onChange={savePlaybackState}
-                checked={currentTrack.playbackState === "record"}
+                checked={currentTrack.playbackMode === "record"}
               />
               <label className="label" htmlFor={`${trackIndex}-record`}>
                 <div style={{ width: 10 }}>{recordIcon}</div>
@@ -220,10 +217,10 @@ export default function ChannelStrip({
               <input
                 type="radio"
                 id={`${trackIndex}-playback`}
-                name={`${trackIndex}-playbackState`}
+                name={`${trackIndex}-playbackMode`}
                 value="playback"
                 onChange={savePlaybackState}
-                checked={currentTrack.playbackState === "playback"}
+                checked={currentTrack.playbackMode === "playback"}
               />
               <label className="label" htmlFor={`${trackIndex}-playback`}>
                 <div style={{ width: 10 }}>{earIcon}</div>
@@ -233,17 +230,17 @@ export default function ChannelStrip({
               <input
                 type="radio"
                 id={`${trackIndex}-free`}
-                name={`${trackIndex}-playbackState`}
+                name={`${trackIndex}-playbackMode`}
                 value="free"
                 onChange={savePlaybackState}
-                checked={currentTrack.playbackState === "free"}
+                checked={currentTrack.playbackMode === "free"}
               />
               <label className="label" htmlFor={`${trackIndex}-free`}>
                 F
               </label>
             </div>
           </div>
-          <span style={{ color: "#232323" }}>{currentTrack.playbackState}</span>
+          <span style={{ color: "#232323" }}>{currentTrack.playbackMode}</span>
           <div className="track-labels">
             <span className="track-name">{track.name}</span>
           </div>

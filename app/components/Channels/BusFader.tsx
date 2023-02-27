@@ -25,7 +25,7 @@ function BusFader({ channel, currentMix, index }: Props) {
   return (
     <Fader
       id={currentMix?.id}
-      // disabled={currentMix?.playbackState === "playback"}
+      // disabled={currentMix?.playbackMode === "playback"}
       channel={channel}
       volume={volume}
       changeVolume={changeVolume}

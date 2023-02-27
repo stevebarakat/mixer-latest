@@ -13,7 +13,7 @@ function Restart({ song }: Props) {
     t.stop();
     t.seconds = song.start || 0;
     // currentTracks.forEach((currentTrack: TrackSettings) => {
-    //   if (currentTrack.playbackState === "record") {
+    //   if (currentTrack.playbackMode === "record") {
     //     window.location.reload();
     //   }
     // });

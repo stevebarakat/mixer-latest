@@ -37,7 +37,7 @@ function TrackFader({
 
     function startRecording(index: number) {
       console.log("currentTracks[index]", currentTracks[index]);
-      if (currentTracks[index].playbackState !== "record") return;
+      if (currentTracks[index].playbackMode !== "record") return;
       console.log("Recording!!!");
       console.log("index", index);
       let data: {}[] = [];
@@ -62,13 +62,13 @@ function TrackFader({
     if (playState === "started") {
       const indices = currentTracks.reduce(
         (r: string[], v: TrackSettings, i: any) => {
-          console.log("v.playbackState", v.playbackState);
-          return r.concat(v.playbackState === "record" ? i : []);
+          console.log("v.playbackMode", v.playbackMode);
+          return r.concat(v.playbackMode === "record" ? i : []);
         },
         []
       );
       console.log("indices", indices);
-      if (currentTrack.playbackState === "record") {
+      if (currentTrack.playbackMode === "record") {
         indices.forEach((index: string) => startRecording(parseInt(index, 10)));
       }
     }
@@ -95,21 +95,15 @@ function TrackFader({
   }, [channel.volume, index]);
 
   useEffect(() => {
-    if (currentTrack.playbackState !== "playback") return;
+    if (currentTrack.playbackMode !== "playback") return;
     startPlayback();
 
     return () => {
-      if (currentTrack.playbackState === "playback") {
+      if (currentTrack.playbackMode === "playback") {
         Draw.dispose();
       }
     };
-  }, [
-    currentTrack.playbackState,
-    startPlayback,
-    index,
-    volume,
-    channel.volume,
-  ]);
+  }, [currentTrack.playbackMode, startPlayback, index, volume, channel.volume]);
 
   useEffect(() => {
     if (isRewinding) {
@@ -119,7 +113,7 @@ function TrackFader({
   }, [setIsRewinding, isRewinding, rewind]);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
-    if (currentTrack.playbackState !== "playback") {
+    if (currentTrack.playbackMode !== "playback") {
       if (isMuted) return;
       const value = parseFloat(e.currentTarget.value);
       const transposed = transpose(value);
@@ -133,7 +127,7 @@ function TrackFader({
   return (
     <Fader
       id={currentTrack?.id}
-      disabled={currentTrack.playbackState === "playback"}
+      disabled={currentTrack.playbackMode === "playback"}
       channel={channel}
       volume={volume}
       changeVolume={changeVolume}
