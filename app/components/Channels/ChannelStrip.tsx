@@ -65,13 +65,13 @@ export default function ChannelStrip({
 
   const tempFxChoices = useRef<string[][] | null>(null);
   const selectFx = (e: FormEvent<HTMLSelectElement>, j: number, i: number) => {
-    handleSetTrackFxChoices((currentFxChoices: string[][]) => {
+    return (currentFxChoices: string[][]) => {
       tempFxChoices.current = currentFxChoices.map((each: string[]) => [
         ...each,
       ]);
-      tempFxChoices.current![j][i] = e.currentTarget.value;
-      return tempFxChoices.current;
-    });
+      tempFxChoices.current[j][i] = e.currentTarget.value;
+      handleSetTrackFxChoices(tempFxChoices.current);
+    };
   };
 
   const saveMix = (index: number, playbackMode: string) => {
@@ -100,7 +100,7 @@ export default function ChannelStrip({
 
     localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
 
-    saveMix(trackIndex, currentTracks[trackIndex].playbackMode);
+    saveMix(trackIndex, currentTrack.playbackMode);
   }
 
   return (

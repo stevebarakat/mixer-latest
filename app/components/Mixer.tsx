@@ -28,14 +28,8 @@ function Mixer({ song }: Props) {
   const [isRewinding, isRewindingSet] = useState(false);
   const setIsRewinding = (value: boolean) => isRewindingSet(value);
 
-  const currentMixString = localStorage.getItem("currentMix");
-  const currentMix =
-    (currentMixString && JSON.parse(currentMixString)) ||
-    matches[1].data.currentMix;
-  const currentTracksString = localStorage.getItem("currentTracks");
-  const currentTracks =
-    (currentTracksString && JSON.parse(currentTracksString)) ||
-    matches[1].data.currentTracks;
+  const currentMix = matches[1].data.currentMix;
+  const currentTracks = matches[1].data.currentTracks;
 
   const [playState, setPlayState] = useState("stopped");
   const playStateSet = (value: string) => setPlayState(value);

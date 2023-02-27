@@ -1,6 +1,3 @@
-import { useEffect, useContext } from "react";
-import { MixerContext } from "~/state/context";
-import { Draw, Transport as t } from "tone";
 import { useMatches } from "@remix-run/react";
 
 type Props = {
@@ -18,31 +15,8 @@ function SoloMute({
   isMuted,
   handleSetIsMuted,
 }: Props) {
-  const playbackState = useContext(MixerContext);
   const matches = useMatches();
   const currentTracks = matches[1].data.currentTracks;
-
-  useEffect(() => {
-    if (playbackState === "playback") {
-      const rtmString = localStorage.getItem("realTimeMix");
-      const realTimeMix = rtmString && JSON.parse(rtmString);
-      const times = realTimeMix.mix.map((mix) => mix.time);
-
-      realTimeMix.mix?.map((mix, i) => {
-        return t.schedule((time) => {
-          Draw.schedule(() => {
-            handleSetIsMuted(mix.currentTracks[index].mute);
-          }, time);
-        }, times[i]);
-      });
-    }
-  }, [playbackState, handleSetIsMuted, currentTracks, index]);
-
-  useEffect(() => {
-    if (playbackState === "playback") {
-      channel.mute = isMuted;
-    }
-  }, [isMuted, channel, playbackState]);
 
   const changeSolo = (e: React.FormEvent<HTMLInputElement>): void => {
     const soloed = e.currentTarget.checked;
@@ -56,7 +30,6 @@ function SoloMute({
   };
 
   const updateMute = (e: React.FormEvent<HTMLInputElement>): void => {
-    if (playbackState === "playback") return;
     currentTracks[index].mute = e.currentTarget.checked;
     localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
   };
