@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useMatches } from "@remix-run/react";
 import { Destination, Loop, Volume, Transport as t } from "tone";
-import Controls from "./Transport/Controls";
+import Transport from "./Transport";
 import MasterVol from "./Channels/Master";
 import BusReceive from "./Channels/BusReceive";
 import ChannelStrip from "./Channels/ChannelStrip";
@@ -253,7 +253,7 @@ function Mixer({ song }: Props) {
 
       <div className="flex">
         <div className="controls flex gap8 pt8">
-          <Controls
+          <Transport
             song={song}
             setIsRewinding={setIsRewinding}
             playState={playState}

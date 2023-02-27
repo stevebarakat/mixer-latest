@@ -59,7 +59,7 @@ function TrackFader({
           })
         );
         i.current = i.current + 1;
-      }, 1).start();
+      }, 1).start("+0.5");
     }
 
     if (playState === "started") {
@@ -82,8 +82,8 @@ function TrackFader({
     const rtmString = localStorage.getItem(`Track${index}`);
     const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
-    realTimeMix.mix?.map((mix) => {
-      return t.schedule((time) => {
+    realTimeMix.mix?.map((mix: TrackSettings[] & any) => {
+      return t.scheduleOnce((time) => {
         Draw.schedule(() => {
           const transposed = transpose(mix[`${index}`].volume);
           const scaled = dBToPercent(transposed);

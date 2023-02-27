@@ -14,7 +14,7 @@ type Props = {
   setPlayState: (arg: string) => void;
 };
 
-function Controls({ song, setIsRewinding, playState, setPlayState }: Props) {
+function Transport({ song, setIsRewinding, playState, setPlayState }: Props) {
   const [isStarted, setStarted] = useState(false);
   const keys = useKeys();
 
@@ -63,4 +63,4 @@ function Controls({ song, setIsRewinding, playState, setPlayState }: Props) {
   );
 }
 
-export default Controls;
+export default Transport;
