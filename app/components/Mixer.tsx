@@ -64,25 +64,21 @@ function Mixer({ song }: Props) {
     }
   });
 
-  function rewind(
-    time: number,
-    track: string,
-    playbackMode: string,
-    loop: Loop
-  ) {
+  function rewind(track: string, playbackMode: string, loop: Loop) {
     if (t.seconds < song.start!) {
       t.seconds = song.start || 0;
     } else {
       t.seconds = t.seconds - 5;
     }
+
+    const time = currentTracks.length;
     if (playbackMode === "record") {
       console.log("rewinding!");
       const realTimeMixString = localStorage.getItem(track);
       const realTimeMix = realTimeMixString && JSON.parse(realTimeMixString);
       loop.stop();
       looper.current = new Loop(() => {
-        console.log("time", time - 5);
-        realTimeMix.mix.splice(time - 5, time, {
+        realTimeMix.mix.splice(time - 50, time, {
           time: t.seconds.toFixed(0),
           currentMix: JSON.parse(localStorage.getItem("currentMix")!),
           currentTracks: JSON.parse(localStorage.getItem("currentTracks")!),
@@ -97,7 +93,7 @@ function Mixer({ song }: Props) {
             mix: realTimeMix.mix,
           })
         );
-      }, "2n").start();
+      }, 0.1).start("+0.5");
     }
     // loop.current?.start();
   }

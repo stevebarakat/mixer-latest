@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Fader from "./Fader";
 import { dBToPercent, transpose } from "~/utils/scale";
 import { Draw, Loop, Transport as t } from "tone";
@@ -12,12 +12,7 @@ type Props = {
   index: number;
   setIsRewinding: (arg: boolean) => void;
   isRewinding: boolean;
-  rewind: (
-    time: number,
-    track: string,
-    playbackMode: string,
-    loop: Loop
-  ) => void;
+  rewind: (track: string, playbackMode: string, loop: Loop) => void;
   loop: React.MutableRefObject<Loop>;
 };
 
@@ -35,7 +30,6 @@ function TrackFader({
 }: Props) {
   const [volume, setVolume] = useState(currentTrack.volume);
 
-  const i = useRef(0);
   useEffect(() => {
     /////////////////////
     // START RECORDING //
@@ -50,7 +44,7 @@ function TrackFader({
         const currentTracks =
           currentTracksString && JSON.parse(currentTracksString);
 
-        data = [{ time: i.current, ...currentTracks }, ...data];
+        data = [{ time: t.seconds.toFixed(1), ...currentTracks }, ...data];
 
         localStorage.setItem(
           `Track${index}`,
@@ -58,8 +52,7 @@ function TrackFader({
             mix: data,
           })
         );
-        i.current = i.current + 1;
-      }, 1).start("+0.5");
+      }, 0.1).start("+0.5");
     }
 
     if (playState === "started") {
@@ -107,12 +100,7 @@ function TrackFader({
 
   useEffect(() => {
     if (isRewinding) {
-      rewind(
-        i.current,
-        `Track${index}`,
-        currentTrack.playbackMode,
-        loop.current
-      );
+      rewind(`Track${index}`, currentTrack.playbackMode, loop.current);
       setIsRewinding(false);
     }
   }, [

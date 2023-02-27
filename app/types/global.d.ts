@@ -33,5 +33,6 @@ declare global {
     | FeedbackDelay
     | Chebyshev
     | FrequencyShifter
-    | PitchShift;
+    | PitchShift
+    | JSX.Element;
 }
