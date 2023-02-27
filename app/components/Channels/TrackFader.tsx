@@ -20,11 +20,7 @@ function TrackFader({
   playState,
   index,
 }: Props) {
-  const volumesString = localStorage.getItem("volumes");
-  const volumes = volumesString && JSON.parse(volumesString);
-  const [volume, setVolume] = useState(() => {
-    return volumes ?? currentTracks.map((currentTrack) => currentTrack.volume);
-  });
+  const [volume, setVolume] = useState(currentTrack.volume);
   const loop = useRef<Loop | null>(null);
 
   console.log("playstate", playState);
@@ -40,32 +36,14 @@ function TrackFader({
       if (currentTracks[index].playbackState !== "record") return;
       console.log("Recording!!!");
       console.log("index", index);
-      let data: {
-        time: string;
-        0: number;
-        1: number;
-        2: number;
-        3: number;
-      }[] = [];
+      let data: {}[] = [];
 
       loop.current = new Loop(() => {
         const currentTracksString = localStorage.getItem("currentTracks");
         const currentTracks =
           currentTracksString && JSON.parse(currentTracksString);
 
-        const ubu = Object.assign({}, currentTracks);
-
-        // data.push({
-        //   time: t.seconds.toFixed(1),
-        //   ...ubu,
-        // });
-
-        data = [{ time: t.seconds.toFixed(1), ...ubu }, ...data];
-
-        // console.log("data", data);
-        // console.log("index", index);
-        // console.log("data[index][0]", data[index][0]);
-        // console.log("currentTrack.index", currentTrack.index);
+        data = [{ time: t.seconds.toFixed(1), ...currentTracks }, ...data];
 
         localStorage.setItem(
           "realTimeMix",
@@ -113,15 +91,14 @@ function TrackFader({
     realTimeMix.mix?.map((mix) => {
       return t.schedule((time) => {
         Draw.schedule(() => {
-          channel.volume.value = volume[index];
           const transposed = transpose(mix[`${index}`].volume);
           const scaled = dBToPercent(transposed);
-          volume[index] = scaled;
-          return setVolume([...volume]);
+          channel.volume.value = scaled;
+          return setVolume(mix[`${index}`].volume);
         }, time);
       }, mix.time);
     });
-  }, [volume, channel.volume, index]);
+  }, [channel.volume, index]);
 
   useEffect(() => {
     if (currentTrack.playbackState !== "playback") return;
@@ -152,9 +129,8 @@ function TrackFader({
       const transposed = transpose(value);
       const scaled = dBToPercent(transposed);
       channel.volume.value = scaled;
-      volume[index] = value;
-      setVolume([...volume]);
-      currentTrack.volume = value;
+      setVolume(value);
+      currentTrack.volume = scaled;
       localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
     }
   }
@@ -163,7 +139,7 @@ function TrackFader({
       id={currentTrack?.id}
       disabled={currentTrack.playbackState === "playback"}
       channel={channel}
-      volume={volume[index]}
+      volume={volume}
       changeVolume={changeVolume}
     />
   );

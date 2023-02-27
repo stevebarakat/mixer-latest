@@ -74,15 +74,6 @@ function Mixer({ song }: Props) {
     }
   });
 
-  (function init() {
-    const vols = JSON.parse(localStorage.getItem("volumes")!);
-    if (vols === null) {
-      return Array(tracks.length).fill(-32);
-    } else {
-      return vols;
-    }
-  })();
-
   function rewind() {
     if (t.seconds < song.start!) {
       t.seconds = song.start || 0;
