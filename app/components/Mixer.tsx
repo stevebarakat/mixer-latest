@@ -23,6 +23,7 @@ function Mixer({ song }: Props) {
   const matches = useMatches();
   const tracks = song.tracks;
   const busChannels = useRef<Volume[]>([new Volume(), new Volume()]);
+  const loop = useRef<Loop>(new Loop());
   const looper = useRef<Loop | null>(null);
   const [isRewinding, isRewindingSet] = useState(false);
   const setIsRewinding = (value: boolean) => isRewindingSet(value);
@@ -38,9 +39,6 @@ function Mixer({ song }: Props) {
 
   const [playState, setPlayState] = useState("stopped");
   const playStateSet = (value: string) => setPlayState(value);
-
-  const [playbackMode, setPlaybackState] = useState(currentTracks.playbackMode);
-  const playbackStateSet = (value: string) => setPlaybackState(value);
 
   const [busFxOpen, setBusFxOpen] = useState([true, true]);
   const handleSetBusFxOpen = (value: boolean[]) => setBusFxOpen(value);
@@ -72,27 +70,31 @@ function Mixer({ song }: Props) {
     }
   });
 
-  function rewind(time: number) {
+  function rewind(
+    time: number,
+    track: string,
+    playbackMode: string,
+    loop: Loop
+  ) {
     if (t.seconds < song.start!) {
       t.seconds = song.start || 0;
     } else {
       t.seconds = t.seconds - 5;
     }
-    // loop.current?.stop();
     if (playbackMode === "record") {
-      t.cancel();
-      t.start();
-      const realTimeMixString = localStorage.getItem("realTimeMix");
+      console.log("rewinding!");
+      const realTimeMixString = localStorage.getItem(track);
       const realTimeMix = realTimeMixString && JSON.parse(realTimeMixString);
+      loop.stop();
       looper.current = new Loop(() => {
         console.log("time", time - 5);
-        realTimeMix.mix.splice(time - 10, time + 5, {
+        realTimeMix.mix.splice(time - 5, time, {
           time: t.seconds.toFixed(0),
           currentMix: JSON.parse(localStorage.getItem("currentMix")!),
           currentTracks: JSON.parse(localStorage.getItem("currentTracks")!),
         });
-        console.log("realTimeMix", realTimeMix);
-        looper.current?.stop("+5");
+        looper.current?.stop();
+        loop.start();
 
         localStorage.setItem(
           "realTimeMix",
@@ -101,7 +103,7 @@ function Mixer({ song }: Props) {
             mix: realTimeMix.mix,
           })
         );
-      }, "2n").start("+0.5");
+      }, "2n").start();
     }
     // loop.current?.start();
   }
@@ -203,9 +205,9 @@ function Mixer({ song }: Props) {
             handleSetTrackFxOpen={handleSetTrackFxOpen}
             trackFxChoices={trackFxChoices}
             handleSetTrackFxChoices={handleSetTrackFxChoices}
-            setPlaybackState={playbackStateSet}
             playState={playState}
             rewind={rewind}
+            loop={loop}
             isRewinding={isRewinding}
             setIsRewinding={setIsRewinding}
           />

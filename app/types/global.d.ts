@@ -9,6 +9,7 @@ import type { Destination as ToneDestination } from "tone/build/esm/core/context
 import type {
   Channel as ToneChannel,
   Volume as ToneVolume,
+  Loop as ToneLoop,
   Reverb,
   FeedbackDelay,
   Chebyshev,
@@ -23,6 +24,7 @@ declare global {
   type MixSettings = MixSettingsType;
   type TrackSettings = TrackSettingsType;
   type Destination = ToneDestination;
+  type Loop = ToneLoop;
   type Channel = ToneChannel;
   type Volume = ToneVolume;
   type Source = Song & { tracks: Track[] };

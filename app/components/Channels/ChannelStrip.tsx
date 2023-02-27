@@ -21,11 +21,11 @@ type Props = {
   toggleBus: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSetTrackFxOpen: (value: boolean[]) => void;
   handleSetTrackFxChoices: (arg: string[][]) => void;
-  setPlaybackState: (arg: string) => void;
   playState: string;
-  rewind: (arg: number) => void;
+  rewind: (time: number, track: string, playbackState: string) => void;
   isRewinding: boolean;
   setIsRewinding: (arg: boolean) => void;
+  loop: React.MutableRefObject<Loop>;
 };
 
 export default function ChannelStrip({
@@ -40,11 +40,11 @@ export default function ChannelStrip({
   handleSetTrackFxChoices,
   trackFxOpen,
   handleSetTrackFxOpen,
-  setPlaybackState,
   playState,
   rewind,
   isRewinding,
   setIsRewinding,
+  loop,
 }: Props) {
   const fetcher = useFetcher();
   const currentMixString = localStorage.getItem("currentMix");
@@ -63,16 +63,6 @@ export default function ChannelStrip({
     return trackFxChoices[trackIndex][i] === "";
   });
 
-  // function selectFx(
-  //   e: FormEvent<HTMLSelectElement>,
-  //   busIndex: number,
-  //   fxIndex: number
-  // ) {
-  //   trackFxChoices[busIndex][fxIndex] = e.currentTarget.value;
-  //   handleSetTrackFxChoices([...trackFxChoices]);
-
-  //   return updateCurrentMix({ trackFxChoices });
-  // }
   const tempFxChoices = useRef<string[][] | null>(null);
   const selectFx = (e: FormEvent<HTMLSelectElement>, j: number, i: number) => {
     handleSetTrackFxChoices((currentFxChoices: string[][]) => {
@@ -88,8 +78,6 @@ export default function ChannelStrip({
     const currentTracksString = localStorage.getItem("currentTracks");
     const currentTracksParsed =
       currentTracksString && JSON.parse(currentTracksString);
-
-    console.log("currentTracksParsed", currentTracksParsed[index].playbackMode);
 
     currentTracksParsed[index].playbackMode = playbackMode;
 
@@ -107,32 +95,13 @@ export default function ChannelStrip({
   function savePlaybackState(e: React.SyntheticEvent) {
     const target = e.target as HTMLButtonElement;
     const trackIndex = parseInt(target.id[0], 10);
-    console.log("trackIndex", trackIndex);
 
     currentTracks[trackIndex].playbackMode = target.value;
 
     localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
 
-    setPlaybackState(currentTracks[trackIndex].playbackMode);
     saveMix(trackIndex, currentTracks[trackIndex].playbackMode);
-
-    console.log(
-      "currentTracks[trackIndex].playbackMode",
-      currentTracks[trackIndex].playbackMode
-    );
-    // if (currentTracks[trackIndex].playbackMode === "record") {
-    //   fetcher.submit(
-    //     {
-    //       actionName: "saveRealTimeMix",
-    //       realTimeMix: localStorage.getItem("realTimeMix")!,
-    //     },
-    //     { method: "post", action: "/saveMix", replace: true }
-    //   );
-    // }
-    // window.location.reload();
   }
-
-  console.log("currentTrack.playbackMode", currentTrack.playbackMode);
 
   return (
     <div className="channel">
@@ -198,6 +167,7 @@ export default function ChannelStrip({
             rewind={rewind}
             isRewinding={isRewinding}
             setIsRewinding={setIsRewinding}
+            loop={loop}
           />
           <div className="flex gap4">
             <div className="flex controls">

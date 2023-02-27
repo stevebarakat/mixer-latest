@@ -12,7 +12,8 @@ type Props = {
   index: number;
   setIsRewinding: (arg: boolean) => void;
   isRewinding: boolean;
-  rewind: (arg: number) => void;
+  rewind: (time: number, track: string, playbackMode: string) => void;
+  loop: React.MutableRefObject<Loop>;
 };
 
 function TrackFader({
@@ -25,9 +26,9 @@ function TrackFader({
   setIsRewinding,
   isRewinding,
   rewind,
+  loop,
 }: Props) {
   const [volume, setVolume] = useState(currentTrack.volume);
-  const loop = useRef<Loop | null>(null);
 
   const i = useRef(0);
   useEffect(() => {
@@ -36,10 +37,7 @@ function TrackFader({
     /////////////////////
 
     function startRecording(index: number) {
-      console.log("currentTracks[index]", currentTracks[index]);
       if (currentTracks[index].playbackMode !== "record") return;
-      console.log("Recording!!!");
-      console.log("index", index);
       let data: {}[] = [];
 
       loop.current = new Loop(() => {
@@ -61,18 +59,15 @@ function TrackFader({
 
     if (playState === "started") {
       const indices = currentTracks.reduce(
-        (r: string[], v: TrackSettings, i: any) => {
-          console.log("v.playbackMode", v.playbackMode);
-          return r.concat(v.playbackMode === "record" ? i : []);
-        },
+        (r: string[], v: TrackSettings, i: any) =>
+          r.concat(v.playbackMode === "record" ? i : []),
         []
       );
-      console.log("indices", indices);
       if (currentTrack.playbackMode === "record") {
         indices.forEach((index: string) => startRecording(parseInt(index, 10)));
       }
     }
-  }, [playState, currentTrack, currentTracks]);
+  }, [playState, currentTrack, currentTracks, loop]);
 
   /////////////////////
   // START PLAYBACK //
@@ -107,10 +102,22 @@ function TrackFader({
 
   useEffect(() => {
     if (isRewinding) {
-      rewind(i.current);
+      rewind(
+        i.current,
+        `Track${index}`,
+        currentTrack.playbackMode,
+        loop.current
+      );
       setIsRewinding(false);
     }
-  }, [setIsRewinding, isRewinding, rewind]);
+  }, [
+    setIsRewinding,
+    isRewinding,
+    rewind,
+    index,
+    currentTrack.playbackMode,
+    loop,
+  ]);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
     if (currentTrack.playbackMode !== "playback") {

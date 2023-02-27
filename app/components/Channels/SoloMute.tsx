@@ -29,7 +29,6 @@ function SoloMute({
       const times = realTimeMix.mix.map((mix) => mix.time);
 
       realTimeMix.mix?.map((mix, i) => {
-        console.log("mix", mix);
         return t.schedule((time) => {
           Draw.schedule(() => {
             handleSetIsMuted(mix.currentTracks[index].mute);
