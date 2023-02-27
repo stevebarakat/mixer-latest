@@ -46,7 +46,7 @@ function TrackFader({
         data = [{ time: t.seconds.toFixed(1), ...currentTracks }, ...data];
 
         localStorage.setItem(
-          "realTimeMix",
+          `Track${index}`,
           JSON.stringify({
             mix: data,
           })
@@ -62,7 +62,7 @@ function TrackFader({
         //   },
         //   { method: "post", action: "/saveMix", replace: true }
         // );
-      }, 0.25).start();
+      }, 0.1).start();
     }
 
     if (playState === "started") {
@@ -85,7 +85,7 @@ function TrackFader({
   /////////////////////
 
   const startPlayback = useCallback(() => {
-    const rtmString = localStorage.getItem("realTimeMix");
+    const rtmString = localStorage.getItem(`Track${index}`);
     const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
     realTimeMix.mix?.map((mix) => {
@@ -122,7 +122,6 @@ function TrackFader({
   }, [currentTrack, index]);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
-    localStorage.setItem("volumes", JSON.stringify(volume));
     if (currentTrack.playbackState !== "playback") {
       if (isMuted) return;
       const value = parseFloat(e.currentTarget.value);
