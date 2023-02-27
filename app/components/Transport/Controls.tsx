@@ -9,20 +9,12 @@ import useKeys from "~/hooks/useKeyPress";
 
 type Props = {
   song: Song;
-  rewind: () => void;
-  // startRecording: (arg: number) => void;
-  playbackState: string;
+  setIsRewinding: (arg: boolean) => void;
   playState: string;
   setPlayState: (arg: string) => void;
 };
 
-function Controls({
-  song,
-  rewind,
-  playbackState,
-  playState,
-  setPlayState,
-}: Props) {
+function Controls({ song, setIsRewinding, playState, setPlayState }: Props) {
   const [isStarted, setStarted] = useState(false);
   const keys = useKeys();
 
@@ -62,14 +54,8 @@ function Controls({
     <>
       <div className="flex gap4">
         <Restart song={song} />
-        <Rewind song={song} rewind={rewind} />
-        <Play
-          song={song}
-          // startRecording={startRecording}
-          // playbackState={playbackState}
-          playState={playState}
-          setPlayState={setPlayState}
-        />
+        <Rewind song={song} setIsRewinding={setIsRewinding} />
+        <Play song={song} playState={playState} setPlayState={setPlayState} />
         <FastFwd song={song} />
       </div>
       <Clock song={song} />

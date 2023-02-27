@@ -23,6 +23,9 @@ type Props = {
   handleSetTrackFxChoices: (arg: string[][]) => void;
   setPlaybackState: (arg: string) => void;
   playState: string;
+  rewind: (arg: number) => void;
+  isRewinding: boolean;
+  setIsRewinding: (arg: boolean) => void;
 };
 
 export default function ChannelStrip({
@@ -39,6 +42,9 @@ export default function ChannelStrip({
   handleSetTrackFxOpen,
   setPlaybackState,
   playState,
+  rewind,
+  isRewinding,
+  setIsRewinding,
 }: Props) {
   const fetcher = useFetcher();
   const currentMixString = localStorage.getItem("currentMix");
@@ -192,6 +198,9 @@ export default function ChannelStrip({
             currentTracks={currentTracks}
             isMuted={isMuted}
             playState={playState}
+            rewind={rewind}
+            isRewinding={isRewinding}
+            setIsRewinding={setIsRewinding}
           />
           <div className="flex gap4">
             <div className="flex controls">

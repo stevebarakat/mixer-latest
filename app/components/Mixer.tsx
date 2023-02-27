@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useMatches } from "@remix-run/react";
-import { Destination, Volume, Transport as t } from "tone";
+import { Destination, Loop, Volume, Transport as t } from "tone";
 import Controls from "./Transport/Controls";
 import MasterVol from "./Channels/Master";
 import BusReceive from "./Channels/BusReceive";
@@ -23,6 +23,9 @@ function Mixer({ song }: Props) {
   const matches = useMatches();
   const tracks = song.tracks;
   const busChannels = useRef<Volume[]>([new Volume(), new Volume()]);
+  const looper = useRef<Loop | null>(null);
+  const [isRewinding, isRewindingSet] = useState(false);
+  const setIsRewinding = (value: boolean) => isRewindingSet(value);
 
   const currentMixString = localStorage.getItem("currentMix");
   const currentMix =
@@ -71,12 +74,38 @@ function Mixer({ song }: Props) {
     }
   });
 
-  function rewind() {
+  function rewind(time: number) {
     if (t.seconds < song.start!) {
       t.seconds = song.start || 0;
     } else {
       t.seconds = t.seconds - 5;
     }
+    // loop.current?.stop();
+    if (playbackState === "record") {
+      t.cancel();
+      t.start();
+      const realTimeMixString = localStorage.getItem("realTimeMix");
+      const realTimeMix = realTimeMixString && JSON.parse(realTimeMixString);
+      looper.current = new Loop(() => {
+        console.log("time", time - 5);
+        realTimeMix.mix.splice(time - 10, time + 5, {
+          time: t.seconds.toFixed(0),
+          currentMix: JSON.parse(localStorage.getItem("currentMix")!),
+          currentTracks: JSON.parse(localStorage.getItem("currentTracks")!),
+        });
+        console.log("realTimeMix", realTimeMix);
+        looper.current?.stop("+5");
+
+        localStorage.setItem(
+          "realTimeMix",
+          JSON.stringify({
+            ...realTimeMix,
+            mix: realTimeMix.mix,
+          })
+        );
+      }, "2n").start("+0.5");
+    }
+    // loop.current?.start();
   }
 
   const [trackFxTypes, trackFxControls] = useFxType({
@@ -178,6 +207,9 @@ function Mixer({ song }: Props) {
             handleSetTrackFxChoices={handleSetTrackFxChoices}
             setPlaybackState={playbackStateSet}
             playState={playState}
+            rewind={rewind}
+            isRewinding={isRewinding}
+            setIsRewinding={setIsRewinding}
           />
         ))}
         {busChannels.current.map((busChannel, i) => (
@@ -229,8 +261,7 @@ function Mixer({ song }: Props) {
         <div className="controls flex gap8 pt8">
           <Controls
             song={song}
-            rewind={rewind}
-            playbackState={playbackState}
+            setIsRewinding={setIsRewinding}
             playState={playState}
             setPlayState={playStateSet}
           />

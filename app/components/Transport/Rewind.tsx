@@ -2,12 +2,12 @@ import rew from "~/assets/rew";
 
 type Props = {
   song: Song;
-  rewind: () => void;
+  setIsRewinding: (arg: boolean) => void;
 };
 
-function Rewind({ rewind }: Props) {
+function Rewind({ setIsRewinding }: Props) {
   return (
-    <button className="button square red" onClick={rewind}>
+    <button className="button square red" onClick={() => setIsRewinding(true)}>
       {rew}
     </button>
   );

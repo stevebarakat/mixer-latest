@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Fader from "./Fader";
 import { dBToPercent, transpose } from "~/utils/scale";
-import { Destination, Volume, Draw, Loop, Transport as t } from "tone";
+import { Draw, Loop, Transport as t } from "tone";
 
 type Props = {
   channel: Channel;
@@ -10,6 +10,9 @@ type Props = {
   isMuted: boolean;
   playState: string;
   index: number;
+  setIsRewinding: (arg: boolean) => void;
+  isRewinding: boolean;
+  rewind: (arg: number) => void;
 };
 
 function TrackFader({
@@ -19,13 +22,14 @@ function TrackFader({
   isMuted,
   playState,
   index,
+  setIsRewinding,
+  isRewinding,
+  rewind,
 }: Props) {
   const [volume, setVolume] = useState(currentTrack.volume);
   const loop = useRef<Loop | null>(null);
 
-  console.log("playstate", playState);
-  console.log("volume", volume);
-
+  const i = useRef(0);
   useEffect(() => {
     /////////////////////
     // START RECORDING //
@@ -43,7 +47,7 @@ function TrackFader({
         const currentTracks =
           currentTracksString && JSON.parse(currentTracksString);
 
-        data = [{ time: t.seconds.toFixed(1), ...currentTracks }, ...data];
+        data = [{ time: i.current, ...currentTracks }, ...data];
 
         localStorage.setItem(
           `Track${index}`,
@@ -51,18 +55,8 @@ function TrackFader({
             mix: data,
           })
         );
-
-        // fetcher.submit(
-        //   {
-        //     actionName: "saveRealTimeMix",
-        //     realTimeMix: JSON.stringify({
-        //       ...realTimeMix,
-        //       mix: data,
-        //     }),
-        //   },
-        //   { method: "post", action: "/saveMix", replace: true }
-        // );
-      }, 0.1).start();
+        i.current = i.current + 1;
+      }, 1).start();
     }
 
     if (playState === "started") {
@@ -118,8 +112,11 @@ function TrackFader({
   ]);
 
   useEffect(() => {
-    if (currentTrack.playbackState === "free") return;
-  }, [currentTrack, index]);
+    if (isRewinding) {
+      rewind(i.current);
+      setIsRewinding(false);
+    }
+  }, [setIsRewinding, isRewinding, rewind]);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
     if (currentTrack.playbackState !== "playback") {
