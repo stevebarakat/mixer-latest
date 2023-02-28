@@ -57,35 +57,47 @@ function TrackFader({
 
   useEffect(() => {
     const indices = currentTracks.reduce(
-      (r: string[], v: TrackSettings, i: any) =>
+      (r: number[], v: TrackSettings, i: any) =>
         r.concat(v.playbackMode === "record" ? i : []),
       []
     );
-    indices.forEach((index: string) => startRecording(parseInt(index, 10)));
-  }, [playState, currentTrack, startRecording, currentTracks, loop]);
+    indices.forEach(
+      (index: number) => playState === "started" && startRecording(index)
+    );
+  }, [playState, currentTracks, startRecording, loop]);
 
   // !!! --- START PLAYBACK --- !!! //
-  const startPlayback = useCallback(() => {
-    const rtmString = localStorage.getItem(`Track${index}`);
-    const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
+  const startPlayback = useCallback(
+    (index: number) => {
+      if (currentTrack.playbackMode !== "playback") return;
+      const rtmString = localStorage.getItem(`Track${index}`);
+      const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
-    realTimeMix.mix?.map((mix: TrackSettings[] & any) => {
-      t.scheduleOnce((time) => {
-        draw.current.schedule(() => {
-          const transposed = transpose(mix[`${index}`].volume);
-          const scaled = dBToPercent(transposed);
-          channel.volume.value = scaled;
-          return setVolume(mix[`${index}`].volume);
-        }, time);
-      }, mix.time);
-      return draw.current.dispose();
-    });
-  }, [channel.volume, index]);
+      realTimeMix.mix?.map((mix: TrackSettings[] & any) => {
+        t.scheduleOnce((time) => {
+          draw.current.schedule(() => {
+            const transposed = transpose(mix[`${index}`].volume);
+            const scaled = dBToPercent(transposed);
+            channel.volume.value = scaled;
+            return setVolume(mix[`${index}`].volume);
+          }, time);
+        }, mix.time);
+        return draw.current.dispose();
+      });
+    },
+    [channel.volume, currentTrack.playbackMode]
+  );
 
   useEffect(() => {
-    if (currentTrack.playbackMode !== "playback") return;
-    startPlayback();
-  }, [currentTrack.playbackMode, startPlayback, index, volume, channel.volume]);
+    const indices = currentTracks.reduce(
+      (r: number[], v: TrackSettings, i: any) =>
+        r.concat(v.playbackMode === "playback" ? i : []),
+      []
+    );
+    indices.forEach(
+      (index: number) => playState === "started" && startPlayback(index)
+    );
+  }, [currentTracks, playState, startPlayback, index]);
 
   useEffect(() => {
     if (isRewinding) {

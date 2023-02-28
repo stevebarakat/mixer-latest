@@ -1,54 +1,25 @@
-import { useLayoutEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
-const specialKeys = [
-  "Shift",
-  "CapsLock",
-  "Meta",
-  "Control",
-  "Alt",
-  "Tab",
-  "Backspace",
-  "Escape",
-  "Space",
-];
+export default function useMultiKeyPress() {
+  const [keysPressed, setKeyPressed] = useState(new Set([]));
 
-const useKeys = () => {
-  const [keys, setKeys] = useState<any[]>([]);
+  function downHandler({ key }: any) {
+    setKeyPressed(keysPressed.add(key));
+  }
 
-  useLayoutEffect(() => {
-    const downHandler = (
-      e: KeyboardEvent,
-      { code, shiftKey, repeat } = e
-    ): void => {
-      // if (repeat) return;
-      setKeys((prevKeys) => {
-        return [
-          ...prevKeys,
-          {
-            code,
-            shiftKey,
-          },
-        ];
-      });
-    };
+  const upHandler = ({ key }: any) => {
+    keysPressed.delete(key);
+    setKeyPressed(keysPressed);
+  };
 
-    const upHandler = ({ code, shiftKey }: KeyboardEvent) => {
-      setKeys((prevKeys) => {
-        return prevKeys.filter((k) => {
-          if (specialKeys.includes(code)) return false;
-          return JSON.stringify(k) !== JSON.stringify({ code, shiftKey });
-        });
-      });
-    };
-
-    window.addEventListener(`keydown`, downHandler);
-    window.addEventListener(`keyup`, upHandler);
+  useEffect(() => {
+    window.addEventListener("keydown", downHandler);
+    window.addEventListener("keyup", upHandler);
     return () => {
-      window.removeEventListener(`keydown`, downHandler);
-      window.removeEventListener(`keyup`, upHandler);
+      window.removeEventListener("keydown", downHandler);
+      window.removeEventListener("keyup", upHandler);
     };
-  }, []);
-  return keys.map((x) => x.code);
-};
+  }, []); // Empty array ensures that effect is only run on mount and unmount
 
-export default useKeys;
+  return keysPressed;
+}
