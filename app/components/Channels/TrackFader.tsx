@@ -66,6 +66,7 @@ function TrackFader({
 
   // !!! --- START PLAYBACK --- !!! //
   const startPlayback = useCallback(() => {
+    if (currentTrack.playbackMode !== "playback") return;
     const rtmString = localStorage.getItem(`Track${index}`);
     const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
@@ -80,12 +81,11 @@ function TrackFader({
       }, mix.time);
       return draw.current.dispose();
     });
-  }, [channel.volume, index]);
+  }, [index, channel.volume, currentTrack.playbackMode]);
 
   useEffect(() => {
-    if (currentTrack.playbackMode !== "playback") return;
     startPlayback();
-  }, [currentTrack.playbackMode, startPlayback, index, volume, channel.volume]);
+  }, [currentTracks, playState, startPlayback, index]);
 
   useEffect(() => {
     if (isRewinding) {
