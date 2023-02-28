@@ -22,12 +22,7 @@ type Props = {
   handleSetTrackFxOpen: (value: boolean[]) => void;
   handleSetTrackFxChoices: (arg: string[][]) => void;
   playState: string;
-  rewind: (
-    time: number,
-    track: string,
-    playbackState: string,
-    loop: Loop
-  ) => void;
+  rewind: (track: string, playbackState: string, loop: Loop) => void;
   isRewinding: boolean;
   setIsRewinding: (arg: boolean) => void;
   loop: React.MutableRefObject<Loop>;

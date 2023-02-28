@@ -57,11 +57,11 @@ function TrackFader({
 
   useEffect(() => {
     const indices = currentTracks.reduce(
-      (r: string[], v: TrackSettings, i: any) =>
+      (r: number[], v: TrackSettings, i: any) =>
         r.concat(v.playbackMode === "record" ? i : []),
       []
     );
-    indices.forEach((index: string) => startRecording(parseInt(index, 10)));
+    indices.forEach((index) => startRecording(index));
   }, [playState, currentTrack, startRecording, currentTracks, loop]);
 
   // !!! --- START PLAYBACK --- !!! //
