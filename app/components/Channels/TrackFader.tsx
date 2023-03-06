@@ -34,15 +34,17 @@ function TrackFader({
   // !!! --- START RECORDING --- !!! //
   const startRecording = useCallback(
     (index: number) => {
-      if (currentTracks[index].playbackMode !== "record") return;
       let data: {}[] = [];
 
       loop.current = new Loop(() => {
         const currentTracksString = localStorage.getItem("currentTracks");
         const currentTracks =
           currentTracksString && JSON.parse(currentTracksString);
+        if (currentTracks[index].playbackMode !== "record") return;
 
-        data = [{ time: t.seconds.toFixed(1), ...currentTracks }, ...data];
+        const volume = currentTracks[index].volume;
+
+        data = [{ time: t.seconds.toFixed(1), volume }, ...data];
 
         localStorage.setItem(
           `Track${index}`,
@@ -52,7 +54,7 @@ function TrackFader({
         );
       }, 0.1).start("+0.5");
     },
-    [currentTracks, loop]
+    [loop]
   );
 
   useEffect(() => {
@@ -69,23 +71,22 @@ function TrackFader({
     const rtmString = localStorage.getItem(`Track${index}`);
     const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
-    realTimeMix.mix?.map((mix: TrackSettings[] & any) => {
-      t.scheduleOnce((time) => {
-        draw.current.schedule(() => {
-          const transposed = transpose(mix[`${index}`].volume);
+    realTimeMix.mix?.forEach((mix: TrackSettings[] & any) => {
+      t.schedule((time) => {
+        Draw.schedule(() => {
+          if (currentTrack.playbackMode !== "playback") return;
+          const transposed = transpose(mix.volume);
           const scaled = dBToPercent(transposed);
           channel.volume.value = scaled;
-          return setVolume(mix[`${index}`].volume);
+          return setVolume(mix.volume);
         }, time);
       }, mix.time);
-      return draw.current.dispose();
     });
-  }, [index, channel.volume]);
+  }, [index, channel.volume, currentTrack.playbackMode]);
 
   useEffect(() => {
-    if (currentTrack.playbackMode !== "playback") return;
     startPlayback();
-  }, [currentTrack.playbackMode, startPlayback]);
+  }, [startPlayback]);
 
   useEffect(() => {
     if (isRewinding) {
