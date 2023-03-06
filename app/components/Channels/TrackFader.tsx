@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Fader from "./Fader";
 import { dBToPercent, transpose } from "~/utils/scale";
 import { Draw, Loop, Transport as t } from "tone";
@@ -10,9 +10,6 @@ type Props = {
   isMuted: boolean;
   playState: string;
   index: number;
-  setIsRewinding: (arg: boolean) => void;
-  isRewinding: boolean;
-  rewind: (track: string, playbackMode: string, loop: Loop) => void;
   loop: React.MutableRefObject<Loop>;
 };
 
@@ -23,13 +20,9 @@ function TrackFader({
   isMuted,
   playState,
   index,
-  setIsRewinding,
-  isRewinding,
-  rewind,
   loop,
 }: Props) {
   const [volume, setVolume] = useState(currentTrack.volume);
-  const draw = useRef<typeof Draw>(Draw);
 
   // !!! --- START RECORDING --- !!! //
   const startRecording = useCallback(
@@ -87,20 +80,6 @@ function TrackFader({
   useEffect(() => {
     startPlayback();
   }, [startPlayback]);
-
-  useEffect(() => {
-    if (isRewinding) {
-      rewind(`Track${index}-volume`, currentTrack.playbackMode, loop.current);
-      setIsRewinding(false);
-    }
-  }, [
-    setIsRewinding,
-    isRewinding,
-    rewind,
-    index,
-    currentTrack.playbackMode,
-    loop,
-  ]);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
     if (currentTrack.playbackMode !== "playback") {

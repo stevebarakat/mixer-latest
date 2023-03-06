@@ -24,9 +24,6 @@ function Mixer({ song }: Props) {
   const tracks = song.tracks;
   const busChannels = useRef<Volume[]>([new Volume(), new Volume()]);
   const loop = useRef<Loop>(new Loop());
-  const looper = useRef<Loop | null>(null);
-  const [isRewinding, isRewindingSet] = useState(false);
-  const setIsRewinding = (value: boolean) => isRewindingSet(value);
 
   const currentMix = matches[1].data.currentMix;
   const currentTracks = matches[1].data.currentTracks;
@@ -63,40 +60,6 @@ function Mixer({ song }: Props) {
       );
     }
   });
-
-  function rewind(track: string, playbackMode: string, loop: Loop) {
-    if (t.seconds < song.start!) {
-      t.seconds = song.start || 0;
-    } else {
-      t.seconds = t.seconds - 5;
-    }
-
-    const time = currentTracks.length;
-    if (playbackMode === "record") {
-      console.log("rewinding!");
-      const realTimeMixString = localStorage.getItem(track);
-      const realTimeMix = realTimeMixString && JSON.parse(realTimeMixString);
-      loop.stop();
-      looper.current = new Loop(() => {
-        realTimeMix.mix.splice(time - 50, time, {
-          time: t.seconds.toFixed(0),
-          currentMix: JSON.parse(localStorage.getItem("currentMix")!),
-          currentTracks: JSON.parse(localStorage.getItem("currentTracks")!),
-        });
-        looper.current?.stop();
-        loop.start();
-
-        localStorage.setItem(
-          "realTimeMix",
-          JSON.stringify({
-            ...realTimeMix,
-            mix: realTimeMix.mix,
-          })
-        );
-      }, 0.1).start("+0.5");
-    }
-    // loop.current?.start();
-  }
 
   const [trackFxTypes, trackFxControls] = useFxType({
     fxChoices: trackFxChoices,
@@ -196,10 +159,7 @@ function Mixer({ song }: Props) {
             trackFxChoices={trackFxChoices}
             handleSetTrackFxChoices={handleSetTrackFxChoices}
             playState={playState}
-            rewind={rewind}
             loop={loop}
-            isRewinding={isRewinding}
-            setIsRewinding={setIsRewinding}
           />
         ))}
         {busChannels.current.map((busChannel, i) => (
@@ -251,7 +211,6 @@ function Mixer({ song }: Props) {
         <div className="controls flex gap8 pt8">
           <Transport
             song={song}
-            setIsRewinding={setIsRewinding}
             playState={playState}
             setPlayState={playStateSet}
           />

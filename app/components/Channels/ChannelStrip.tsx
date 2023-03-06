@@ -22,9 +22,6 @@ type Props = {
   handleSetTrackFxOpen: (value: boolean[]) => void;
   handleSetTrackFxChoices: (arg: string[][]) => void;
   playState: string;
-  rewind: (track: string, playbackState: string, loop: Loop) => void;
-  isRewinding: boolean;
-  setIsRewinding: (arg: boolean) => void;
   loop: React.MutableRefObject<Loop>;
 };
 
@@ -41,9 +38,6 @@ export default function ChannelStrip({
   trackFxOpen,
   handleSetTrackFxOpen,
   playState,
-  rewind,
-  isRewinding,
-  setIsRewinding,
   loop,
 }: Props) {
   const fetcher = useFetcher();
@@ -164,9 +158,6 @@ export default function ChannelStrip({
             currentTracks={currentTracks}
             isMuted={isMuted}
             playState={playState}
-            rewind={rewind}
-            isRewinding={isRewinding}
-            setIsRewinding={setIsRewinding}
             loop={loop}
           />
           <div className="flex gap4">

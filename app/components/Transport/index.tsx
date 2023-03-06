@@ -9,12 +9,11 @@ import useKeys from "~/hooks/useKeyPress";
 
 type Props = {
   song: Song;
-  setIsRewinding: (arg: boolean) => void;
   playState: string;
   setPlayState: (arg: string) => void;
 };
 
-function Transport({ song, setIsRewinding, playState, setPlayState }: Props) {
+function Transport({ song, playState, setPlayState }: Props) {
   const [isStarted, setStarted] = useState(false);
   const keys = useKeys();
 
@@ -23,26 +22,25 @@ function Transport({ song, setIsRewinding, playState, setPlayState }: Props) {
   }, []);
 
   useEffect(() => {
-    switch (keys[0]) {
-      case "Space":
-      case "NumpadDecimal":
-      case "ArrowDown":
+    switch (keys.toString()) {
+      case "ShiftLeft,Space":
+      case "ShiftLeft,NumpadDecimal":
+      case "ShiftLeft,ArrowDown":
         isStarted ? t.pause() : t.start();
         return () => setStarted(!isStarted);
-      case "Numpad0":
-      case "ArrowUp":
+      case "ShiftLeft,Numpad0":
+      case "ShiftLeft,ArrowUp":
         t.stop();
         t.seconds = song.start || 0;
         return () => setStarted((started) => !started);
-      case "NumpadEnter":
+      case "ShiftLeft,NumpadEnter":
         t.seconds = song.start || 0;
         t.start();
         return () => setStarted(true);
-      case "ArrowLeft":
+      case "ShiftLeft,ArrowLeft":
         t.seconds = t.seconds - 10;
         break;
-      case "ArrowRight":
-      case "FF":
+      case "ShiftLeft,ArrowRight":
         t.seconds = t.seconds + 10;
         break;
       default:
@@ -54,7 +52,7 @@ function Transport({ song, setIsRewinding, playState, setPlayState }: Props) {
     <>
       <div className="flex gap4">
         <Restart song={song} />
-        <Rewind song={song} setIsRewinding={setIsRewinding} />
+        <Rewind song={song} />
         <Play song={song} playState={playState} setPlayState={setPlayState} />
         <FastFwd song={song} />
       </div>

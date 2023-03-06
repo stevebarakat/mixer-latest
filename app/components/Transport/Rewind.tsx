@@ -1,13 +1,21 @@
+import { Transport as t } from "tone";
 import rew from "~/assets/rew";
 
 type Props = {
   song: Song;
-  setIsRewinding: (arg: boolean) => void;
 };
 
-function Rewind({ setIsRewinding }: Props) {
+function Rewind({ song }: Props) {
+  function rewind() {
+    if (t.seconds < song.start!) {
+      t.seconds = song.start || 0;
+    } else {
+      t.seconds = t.seconds - 10;
+    }
+  }
+
   return (
-    <button className="button square red" onClick={() => setIsRewinding(true)}>
+    <button className="button square red" onClick={rewind}>
       {rew}
     </button>
   );
