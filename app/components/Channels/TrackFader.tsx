@@ -47,7 +47,7 @@ function TrackFader({
         data = [{ time: t.seconds.toFixed(1), volume }, ...data];
 
         localStorage.setItem(
-          `Track${index}`,
+          `Track${index}-volume`,
           JSON.stringify({
             mix: data,
           })
@@ -68,7 +68,7 @@ function TrackFader({
 
   // !!! --- START PLAYBACK --- !!! //
   const startPlayback = useCallback(() => {
-    const rtmString = localStorage.getItem(`Track${index}`);
+    const rtmString = localStorage.getItem(`Track${index}-volume`);
     const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
     realTimeMix.mix?.forEach((mix: TrackSettings[] & any) => {
@@ -90,7 +90,7 @@ function TrackFader({
 
   useEffect(() => {
     if (isRewinding) {
-      rewind(`Track${index}`, currentTrack.playbackMode, loop.current);
+      rewind(`Track${index}-volume`, currentTrack.playbackMode, loop.current);
       setIsRewinding(false);
     }
   }, [
