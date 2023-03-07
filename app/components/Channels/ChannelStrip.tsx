@@ -76,18 +76,28 @@ export default function ChannelStrip({
     const currentTracksParsed =
       currentTracksString && JSON.parse(currentTracksString);
 
-    currentTracksParsed[index].playbackMode.volume = playbackMode?.volume;
+    switch (currentTracks[trackIndex].param) {
+      case "volume":
+        currentTracksParsed[index].playbackMode.volume = playbackMode?.volume;
 
-    console.log("playbackMode", JSON.stringify(playbackMode));
-    const currentTracks = JSON.stringify(currentTracksParsed);
+        currentTracksParsed[index].playbackMode.pan = playbackMode?.pan;
+        break;
+      case "pan":
+        currentTracksParsed[index].playbackMode.pan = playbackMode?.pan;
+        break;
+      default:
+        break;
+    }
     fetcher.submit(
       {
-        actionName: "saveMix",
-        currentMix: localStorage.getItem("currentMix")!,
-        currentTracks,
+        actionName: "savePlaybackMode",
         playbackMode: JSON.stringify(currentTracksParsed[index].playbackMode),
       },
       { method: "post", action: "/saveMix", replace: true }
+    );
+    localStorage.setItem(
+      "playbackMode",
+      JSON.stringify(currentTracksParsed[index].playbackMode)
     );
   };
 
@@ -95,12 +105,16 @@ export default function ChannelStrip({
     const target = e.target as HTMLButtonElement;
     const trackIndex = parseInt(target.id[0], 10);
 
-    console.log("target.value", target.value);
-    console.log(
-      "currentTracks[trackIndex].playbackMode.volume,",
-      currentTracks[trackIndex].playbackMode.volume
-    );
-    currentTracks[trackIndex].playbackMode.volume = target.value;
+    switch (currentTracks[trackIndex].param) {
+      case "volume":
+        currentTracks[trackIndex].playbackMode.volume = target.value;
+        break;
+      case "pan":
+        currentTracks[trackIndex].playbackMode.pan = target.value;
+        break;
+      default:
+        break;
+    }
 
     localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
 
@@ -108,8 +122,8 @@ export default function ChannelStrip({
   }
 
   console.log(
-    "currentTracks[trackIndex].playbackMode.volume",
-    currentTracks[trackIndex].playbackMode.volume
+    "currentTracks[trackIndex].param",
+    currentTracks[trackIndex].param
   );
 
   return (

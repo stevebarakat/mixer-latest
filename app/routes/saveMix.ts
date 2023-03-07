@@ -21,8 +21,6 @@ export const action: ActionFunction = async ({ request }) => {
   const realTimeMix =
     typeof realTimeMixString === "string" && JSON.parse(realTimeMixString);
 
-  console.log("playbackMode", playbackMode.volume);
-
   switch (actionName) {
     case "saveMix":
       await db.mixSettings.update({
@@ -84,6 +82,10 @@ export const action: ActionFunction = async ({ request }) => {
           })
       );
 
+      break;
+
+    case "savePlaybackMode":
+      console.log("HEYTHERE!!!!!");
       await db.playbackMode.update({
         where: {
           id: playbackMode.id,

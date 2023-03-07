@@ -60,7 +60,6 @@ function TrackFader({
     const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
     realTimeMix.forEach((mix: TrackSettings[] & any) => {
-      console.log("mix", mix);
       t.schedule((time) => {
         Draw.schedule(() => {
           if (currentTracks[index].playbackMode.volume !== "playback") return;
@@ -78,7 +77,6 @@ function TrackFader({
   }, [startPlayback]);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
-    console.log("message");
     if (currentTracks[index].playbackMode.volume !== "playback") {
       if (isMuted) return;
       const value = parseFloat(e.currentTarget.value);
