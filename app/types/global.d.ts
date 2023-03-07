@@ -23,7 +23,7 @@ declare global {
   type Song = SongType;
   type Track = TrackType;
   type MixSettings = MixSettingsType;
-  type TrackSettings = TrackSettingsType;
+  type TrackSettings = TrackSettingsType & { playbackMode: PlaybackModeType };
   type PlaybackMode = PlaybackModeType;
   type Destination = ToneDestination;
   type Loop = ToneLoop;
