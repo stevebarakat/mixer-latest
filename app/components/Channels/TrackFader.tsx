@@ -53,7 +53,7 @@ function TrackFader({
   useEffect(() => {
     const indices = currentTracks.reduce(
       (r: number[], v: TrackSettings, i: any) =>
-        r.concat(v.playbackMode === "record" ? i : []),
+        r.concat(v.playbackMode.volume === "record" ? i : []),
       []
     );
     indices.forEach((index) => startRecording(index));
@@ -67,7 +67,7 @@ function TrackFader({
     realTimeMix.mix?.forEach((mix: TrackSettings[] & any) => {
       t.schedule((time) => {
         Draw.schedule(() => {
-          if (currentTrack.playbackMode !== "playback") return;
+          if (currentTracks[index].playbackMode.volume !== "playback") return;
           const transposed = transpose(mix.volume);
           const scaled = dBToPercent(transposed);
           channel.volume.value = scaled;
@@ -75,14 +75,14 @@ function TrackFader({
         }, time);
       }, mix.time);
     });
-  }, [index, channel.volume, currentTrack.playbackMode]);
+  }, [index, channel.volume, currentTracks]);
 
   useEffect(() => {
     startPlayback();
   }, [startPlayback]);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
-    if (currentTrack.playbackMode !== "playback") {
+    if (currentTracks[index].playbackMode.volume !== "playback") {
       if (isMuted) return;
       const value = parseFloat(e.currentTarget.value);
       const transposed = transpose(value);
@@ -96,7 +96,7 @@ function TrackFader({
   return (
     <Fader
       id={currentTrack?.id}
-      disabled={currentTrack.playbackMode === "playback"}
+      disabled={currentTracks[index].playbackMode.volume === "playback"}
       channel={channel}
       volume={volume}
       changeVolume={changeVolume}

@@ -22,6 +22,14 @@ Table realTimeMix {
   mixSettingsId String [not null]
 }
 
+Table PlaybackMode {
+  id String [pk]
+  volume String [not null, default: 'free']
+  pan String [not null, default: 'free']
+  TrackSettings TrackSettings [not null]
+  trackSettingsId String [not null]
+}
+
 Table MixSettings {
   id String [pk]
   songSlug String [not null]
@@ -68,13 +76,13 @@ Table TrackSettings {
   index Int [not null, default: 0]
   position Int [increment, not null]
   mixName String [not null]
+  playbackMode PlaybackMode [not null]
   mixSettings MixSettings [not null]
   trackSettingsId String [not null]
   mixSettingsId String [not null]
   songSlug String [not null]
   userId String [not null]
   user User [not null]
-  playbackState String [not null, default: 'free']
   volume Float [not null, default: -32]
   solo Boolean [not null, default: false]
   mute Boolean [not null, default: false]
@@ -103,6 +111,7 @@ Table TrackSettings {
   compressorsKnee Float[] [not null]
   compressorsAttack Float[] [not null]
   compressorsRelease Float[] [not null]
+  playbackModeId String [not null]
 }
 
 Table Track {
@@ -130,6 +139,8 @@ Table Song {
 Ref: realTimeMix.mixSettingsId > MixSettings.id [delete: Cascade]
 
 Ref: MixSettings.userId > User.id [delete: Cascade]
+
+Ref: TrackSettings.playbackModeId > PlaybackMode.id [delete: Cascade]
 
 Ref: TrackSettings.mixSettingsId > MixSettings.id [delete: Cascade]
 

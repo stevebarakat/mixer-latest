@@ -32,7 +32,7 @@ export default function ChannelStrip({
   toggleBus,
   busChannels,
   currentTrack,
-  currentTracks,
+  // currentTracks,
   trackFxChoices,
   handleSetTrackFxChoices,
   trackFxOpen,
@@ -43,6 +43,9 @@ export default function ChannelStrip({
   const fetcher = useFetcher();
   const currentMixString = localStorage.getItem("currentMix");
   const currentMix = currentMixString && JSON.parse(currentMixString);
+
+  const currentTracksString = localStorage.getItem("currentTracks");
+  const currentTracks = currentTracksString && JSON.parse(currentTracksString);
 
   const [isMuted, setIsMuted] = useState(false);
   const handleSetIsMuted = (value: boolean) => setIsMuted(value);
@@ -68,19 +71,21 @@ export default function ChannelStrip({
     };
   };
 
-  const saveMix = (index: number, playbackMode: string) => {
+  const saveMix = (index: number, playbackMode: PlaybackMode) => {
     const currentTracksString = localStorage.getItem("currentTracks");
     const currentTracksParsed =
       currentTracksString && JSON.parse(currentTracksString);
 
-    currentTracksParsed[index].playbackMode = playbackMode;
+    currentTracksParsed[index].playbackMode.volume = playbackMode.volume;
 
+    console.log("playbackMode", JSON.stringify(playbackMode));
     const currentTracks = JSON.stringify(currentTracksParsed);
     fetcher.submit(
       {
         actionName: "saveMix",
         currentMix: localStorage.getItem("currentMix")!,
         currentTracks,
+        playbackMode: JSON.stringify(currentTracksParsed[0].playbackMode),
       },
       { method: "post", action: "/saveMix", replace: true }
     );
@@ -90,12 +95,22 @@ export default function ChannelStrip({
     const target = e.target as HTMLButtonElement;
     const trackIndex = parseInt(target.id[0], 10);
 
-    currentTracks[trackIndex].playbackMode = target.value;
+    console.log("target.value", target.value);
+    console.log(
+      "currentTracks[trackIndex].playbackMode.volume,",
+      currentTracks[trackIndex].playbackMode.volume
+    );
+    currentTracks[trackIndex].playbackMode.volume = target.value;
 
     localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
 
     saveMix(trackIndex, currentTrack.playbackMode);
   }
+
+  console.log(
+    "currentTracks[trackIndex].playbackMode.volume",
+    currentTracks[trackIndex].playbackMode.volume
+  );
 
   return (
     <div className="channel">
@@ -168,7 +183,9 @@ export default function ChannelStrip({
                 name={`${trackIndex}-playbackMode`}
                 value="record"
                 onChange={savePlaybackState}
-                checked={currentTrack.playbackMode === "record"}
+                checked={
+                  currentTracks[trackIndex].playbackMode.volume === "record"
+                }
               />
               <label className="label" htmlFor={`${trackIndex}-record`}>
                 <div style={{ width: 10 }}>{recordIcon}</div>
@@ -181,7 +198,9 @@ export default function ChannelStrip({
                 name={`${trackIndex}-playbackMode`}
                 value="playback"
                 onChange={savePlaybackState}
-                checked={currentTrack.playbackMode === "playback"}
+                checked={
+                  currentTracks[trackIndex].playbackMode.volume === "playback"
+                }
               />
               <label className="label" htmlFor={`${trackIndex}-playback`}>
                 <div style={{ width: 10 }}>{earIcon}</div>
@@ -194,14 +213,18 @@ export default function ChannelStrip({
                 name={`${trackIndex}-playbackMode`}
                 value="free"
                 onChange={savePlaybackState}
-                checked={currentTrack.playbackMode === "free"}
+                checked={
+                  currentTracks[trackIndex].playbackMode.volume === "free"
+                }
               />
               <label className="label" htmlFor={`${trackIndex}-free`}>
                 F
               </label>
             </div>
           </div>
-          <span style={{ color: "#232323" }}>{currentTrack.playbackMode}</span>
+          <span style={{ color: "#232323" }}>
+            {currentTracks[trackIndex].playbackMode.volume}
+          </span>
           <div className="track-labels">
             <span className="track-name">{track.name}</span>
           </div>

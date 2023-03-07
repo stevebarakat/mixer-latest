@@ -35,7 +35,7 @@ function Pan({ index, channel, currentTrack }: Props) {
   useEffect(() => {
     const indices = currentTracks.reduce(
       (r: number[], v: TrackSettings, i: any) =>
-        r.concat(v.playbackMode === "record" ? i : []),
+        r.concat(v.playbackMode.pan === "record" ? i : []),
       []
     );
     indices.forEach((index: number) => startRecording(index));
@@ -49,7 +49,7 @@ function Pan({ index, channel, currentTrack }: Props) {
     realTimeMix.forEach((mix: TrackSettings[] & any) => {
       t.schedule((time) => {
         Draw.schedule(() => {
-          if (currentTrack.playbackMode !== "playback") return;
+          if (currentTrack.playbackMode.pan !== "playback") return;
           channel.pan.value = mix.pan;
           return setPan(mix.pan);
         }, time);

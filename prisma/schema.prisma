@@ -30,6 +30,14 @@ model realTimeMix {
   mixSettingsId String      @default(uuid())
 }
 
+model PlaybackMode {
+  id              String          @id @default(uuid())
+  volume          String          @default("free")
+  pan             String          @default("free")
+  TrackSettings   TrackSettings[]
+  trackSettingsId String          @default(uuid())
+}
+
 model MixSettings {
   id                   String          @id @default(uuid())
   songSlug             String
@@ -72,45 +80,46 @@ model MixSettings {
 }
 
 model TrackSettings {
-  id                   String      @id @default(uuid())
-  index                Int         @default(0)
-  position             Int         @default(autoincrement())
+  id                   String       @id @default(uuid())
+  index                Int          @default(0)
+  position             Int          @default(autoincrement())
   mixName              String
-  mixSettings          MixSettings @relation(fields: [mixSettingsId], references: [id], onDelete: Cascade)
-  trackSettingsId      String      @default(uuid())
-  mixSettingsId        String      @default(uuid())
+  playbackMode         PlaybackMode @relation(fields: [playbackModeId], references: [id], onDelete: Cascade)
+  mixSettings          MixSettings  @relation(fields: [mixSettingsId], references: [id], onDelete: Cascade)
+  trackSettingsId      String       @default(uuid())
+  mixSettingsId        String       @default(uuid())
   songSlug             String
   userId               String
-  user                 User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  playbackMode         String      @default("free")
-  volume               Float       @default(-32)
-  solo                 Boolean     @default(false)
-  mute                 Boolean     @default(false)
-  pan                  Float       @default(0)
-  activeBusses         Boolean[]   @default([false, false])
-  eqHi                 Float       @default(0)
-  eqMid                Float       @default(0)
-  eqLow                Float       @default(0)
-  delaysMix            Float[]     @default([0.5, 0.5])
-  delaysTime           Float[]     @default([1, 1])
-  delaysFeedback       Float[]     @default([0.5, 0.5])
-  reverbsMix           Float[]     @default([0.5, 0.5])
-  reverbsPreDelay      Float[]     @default([0.5, 0.5])
-  reverbsDecay         Float[]     @default([0.5, 0.5])
-  pitchShiftsMix       Float[]     @default([0.5, 0.5])
-  pitchShiftsPitch     Float[]     @default([0.5, 0.5])
-  pitchShiftsDelayTime Float[]     @default([0.5, 0.5])
-  pitchShiftsSize      Float[]     @default([0.5, 0.5])
-  pitchShiftsFeedback  Float[]     @default([0.5, 0.5])
-  chebyshevsMix        Float[]     @default([0.5, 0.5])
-  chebyshevsOrder      Int[]       @default([50, 50])
-  freqShiftsMix        Float[]     @default([0.5, 0.5])
-  freqShiftsFreq       Int[]       @default([2000, 2000])
-  compressorsThreshold Int[]       @default([-50, -50])
-  compressorsRatio     Float[]     @default([10, 10])
-  compressorsKnee      Float[]     @default([20, 20])
-  compressorsAttack    Float[]     @default([0.5, 0.5])
-  compressorsRelease   Float[]     @default([0.5, 0.5])
+  user                 User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  volume               Float        @default(-32)
+  solo                 Boolean      @default(false)
+  mute                 Boolean      @default(false)
+  pan                  Float        @default(0)
+  activeBusses         Boolean[]    @default([false, false])
+  eqHi                 Float        @default(0)
+  eqMid                Float        @default(0)
+  eqLow                Float        @default(0)
+  delaysMix            Float[]      @default([0.5, 0.5])
+  delaysTime           Float[]      @default([1, 1])
+  delaysFeedback       Float[]      @default([0.5, 0.5])
+  reverbsMix           Float[]      @default([0.5, 0.5])
+  reverbsPreDelay      Float[]      @default([0.5, 0.5])
+  reverbsDecay         Float[]      @default([0.5, 0.5])
+  pitchShiftsMix       Float[]      @default([0.5, 0.5])
+  pitchShiftsPitch     Float[]      @default([0.5, 0.5])
+  pitchShiftsDelayTime Float[]      @default([0.5, 0.5])
+  pitchShiftsSize      Float[]      @default([0.5, 0.5])
+  pitchShiftsFeedback  Float[]      @default([0.5, 0.5])
+  chebyshevsMix        Float[]      @default([0.5, 0.5])
+  chebyshevsOrder      Int[]        @default([50, 50])
+  freqShiftsMix        Float[]      @default([0.5, 0.5])
+  freqShiftsFreq       Int[]        @default([2000, 2000])
+  compressorsThreshold Int[]        @default([-50, -50])
+  compressorsRatio     Float[]      @default([10, 10])
+  compressorsKnee      Float[]      @default([20, 20])
+  compressorsAttack    Float[]      @default([0.5, 0.5])
+  compressorsRelease   Float[]      @default([0.5, 0.5])
+  playbackModeId       String
 }
 
 model Track {

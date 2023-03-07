@@ -13,9 +13,15 @@ export const action: ActionFunction = async ({ request }) => {
   const trackSettings =
     typeof trackSettingsString === "string" && JSON.parse(trackSettingsString);
 
+  const playbackModeString = form.get("playbackMode");
+  const playbackMode =
+    typeof playbackModeString === "string" && JSON.parse(playbackModeString);
+
   const realTimeMixString = form.get("realTimeMix");
   const realTimeMix =
     typeof realTimeMixString === "string" && JSON.parse(realTimeMixString);
+
+  console.log("playbackMode", playbackMode.volume);
 
   switch (actionName) {
     case "saveMix":
@@ -53,7 +59,6 @@ export const action: ActionFunction = async ({ request }) => {
               id: track.id,
             },
             data: {
-              playbackMode: track.playbackMode,
               volume: track.volume,
               solo: track.solo,
               mute: track.mute,
@@ -77,6 +82,16 @@ export const action: ActionFunction = async ({ request }) => {
             },
           })
       );
+
+      await db.playbackMode.update({
+        where: {
+          id: playbackMode.id,
+        },
+        data: {
+          volume: playbackMode.volume,
+          pan: playbackMode.pan,
+        },
+      });
       break;
 
     case "saveRealTimeMix":

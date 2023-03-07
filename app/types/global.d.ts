@@ -4,6 +4,7 @@ import type {
   Track as TrackType,
   MixSettings as MixSettingsType,
   TrackSettings as TrackSettingsType,
+  PlaybackMode as PlaybackModeType,
 } from "@prisma/client";
 import type { Destination as ToneDestination } from "tone/build/esm/core/context/Destination";
 import type {
@@ -23,6 +24,7 @@ declare global {
   type Track = TrackType;
   type MixSettings = MixSettingsType;
   type TrackSettings = TrackSettingsType;
+  type PlaybackMode = PlaybackModeType;
   type Destination = ToneDestination;
   type Loop = ToneLoop;
   type Channel = ToneChannel;

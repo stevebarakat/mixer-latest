@@ -12,6 +12,7 @@ export async function getCurrentTracks(mixId: string) {
     where: {
       mixSettingsId: mixId,
     },
+    include: { playbackMode: true },
     orderBy: {
       position: "asc",
     },

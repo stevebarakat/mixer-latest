@@ -83,6 +83,13 @@ export let action: ActionFunction = async ({ request }) => {
   });
 
   sourceSong?.tracks.forEach(async (trackSettings, i) => {
+    const playbackMode = await db.playbackMode.create({
+      data: {
+        volume: "free",
+        pan: "free",
+      },
+    });
+
     await db.trackSettings.create({
       data: {
         index: i,
@@ -91,6 +98,7 @@ export let action: ActionFunction = async ({ request }) => {
         mixSettingsId: mixSettings.id,
         songSlug: slug as string,
         mixName: mixSettings.mixName,
+        playbackModeId: playbackMode.id,
       },
     });
   });

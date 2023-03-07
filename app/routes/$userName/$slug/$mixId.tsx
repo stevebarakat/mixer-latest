@@ -43,6 +43,13 @@ export default function MixNameRoute() {
       localStorage.setItem("currentMix", JSON.stringify(currentMix));
       localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
       // localStorage.setItem("realTimeMix", JSON.stringify(realTimeMix));
+      // currentTracks.forEach((currentTrack: TrackSettings) => {
+      //   console.log("currentTrack.index", currentTrack.index);
+      //   localStorage.setItem(
+      //     `Track${currentTrack.index}-volume`,
+      //     JSON.stringify(currentTrack.volume)
+      //   );
+      // });
     }
   }, [fetcher, currentMix, currentTracks, realTimeMix]);
 
