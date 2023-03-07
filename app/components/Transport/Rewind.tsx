@@ -6,6 +6,12 @@ type Props = {
 };
 
 function Rewind({ song }: Props) {
+  const currentTracks = JSON.parse(localStorage.getItem("currentTracks")!);
+
+  const disabled = currentTracks.some(
+    (currentTrack: TrackSettings) => currentTrack.playbackMode === "record"
+  );
+
   function rewind() {
     if (t.seconds < song.start!) {
       t.seconds = song.start || 0;
@@ -15,7 +21,7 @@ function Rewind({ song }: Props) {
   }
 
   return (
-    <button className="button square red" onClick={rewind}>
+    <button disabled={disabled} className="button square red" onClick={rewind}>
       {rew}
     </button>
   );
