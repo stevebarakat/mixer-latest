@@ -85,7 +85,7 @@ export default function ChannelStrip({
         actionName: "saveMix",
         currentMix: localStorage.getItem("currentMix")!,
         currentTracks,
-        playbackMode: JSON.stringify(currentTracksParsed[0].playbackMode),
+        playbackMode: JSON.stringify(currentTracksParsed[index].playbackMode),
       },
       { method: "post", action: "/saveMix", replace: true }
     );
@@ -104,7 +104,7 @@ export default function ChannelStrip({
 
     localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
 
-    saveMix(trackIndex, currentTrack.playbackMode);
+    saveMix(trackIndex, currentTracks[trackIndex].playbackMode);
   }
 
   console.log(
