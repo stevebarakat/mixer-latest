@@ -20,7 +20,9 @@ type Props = {
   trackFxChoices: string[][];
   toggleBus: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSetTrackFxOpen: (value: boolean[]) => void;
-  handleSetTrackFxChoices: (arg: string[][]) => void;
+  handleSetTrackFxChoices: (
+    arg: (currentTrackFxChoices: string[][]) => string[][]
+  ) => void;
   playState: string;
   loop: React.MutableRefObject<Loop>;
 };
@@ -60,15 +62,30 @@ export default function ChannelStrip({
     return trackFxChoices[trackIndex][i] === "";
   });
 
-  const tempFxChoices = useRef<string[][] | null>(null);
-  const selectFx = (e: FormEvent<HTMLSelectElement>, j: number, i: number) => {
-    return (currentFxChoices: string[][]) => {
-      tempFxChoices.current = currentFxChoices.map((each: string[]) => [
-        ...each,
+  const selectFx = (
+    e: React.FormEvent<HTMLSelectElement>,
+    j: number,
+    i: number
+  ) => {
+    let tempFxChoices: string[][] | null;
+    // TODO ts
+    handleSetTrackFxChoices((currentTrackFxChoices: string[][]) => {
+      tempFxChoices = currentTrackFxChoices.map((choice: string[]) => [
+        ...choice,
       ]);
-      tempFxChoices.current[j][i] = e.currentTarget.value;
-      handleSetTrackFxChoices(tempFxChoices.current);
-    };
+      tempFxChoices[j][i] = e.currentTarget.value;
+      return tempFxChoices;
+    });
+
+    trackFxChoices?.forEach(() => {
+      localStorage.setItem(
+        "currentMix",
+        JSON.stringify({
+          ...currentMix,
+          trackFxChoices: tempFxChoices,
+        })
+      );
+    });
   };
 
   const saveMix = (index: number, playbackMode?: PlaybackMode) => {
