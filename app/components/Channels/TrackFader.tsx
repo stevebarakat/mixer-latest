@@ -41,10 +41,10 @@ function TrackFader({
 
         let ubu = (t.seconds * 10).toFixed(0);
         console.log("ubu", ubu);
-        data[parseInt(ubu, 10)] = { time: t.seconds.toFixed(2), volume };
+        data[t.seconds] = { time: t.seconds.toFixed(1), volume };
 
         localStorage.setItem(`Track${index}-volume`, JSON.stringify(data));
-      }, 0.1).start(0);
+      }, 1).start(0);
     },
     [loop]
   );
