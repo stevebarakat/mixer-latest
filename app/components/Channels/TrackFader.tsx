@@ -57,7 +57,7 @@ function TrackFader({
       []
     );
     indices.forEach((index) => startRecording(index));
-  }, [playState, currentTrack, startRecording, currentTracks, loop]);
+  }, [currentTrack, startRecording, currentTracks, loop]);
 
   // !!! --- START PLAYBACK --- !!! //
   const startPlayback = useCallback(() => {
