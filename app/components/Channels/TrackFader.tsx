@@ -37,14 +37,15 @@ function TrackFader({
 
         const volume = currentTracks[index].volume;
 
-        // data = [{ time: t.seconds.toFixed(1), volume }, ...data];
+        data = [{ time: t.seconds.toFixed(1), volume }, ...data];
 
-        let ubu = (t.seconds * 10).toFixed(0);
-        console.log("ubu", ubu);
-        data[t.seconds] = { time: t.seconds.toFixed(1), volume };
-
-        localStorage.setItem(`Track${index}-volume`, JSON.stringify(data));
-      }, 1).start(0);
+        localStorage.setItem(
+          `Track${index}-volume`,
+          JSON.stringify({
+            mix: data,
+          })
+        );
+      }, 0.1).start(0);
     },
     [loop]
   );
@@ -63,7 +64,7 @@ function TrackFader({
     const rtmString = localStorage.getItem(`Track${index}-volume`);
     const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
-    realTimeMix.forEach((mix: TrackSettings[] & any) => {
+    realTimeMix.mix?.forEach((mix: TrackSettings[] & any) => {
       t.schedule((time) => {
         Draw.schedule(() => {
           if (currentTrack.playbackMode !== "playback") return;
