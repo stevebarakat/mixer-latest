@@ -198,7 +198,9 @@ export default function ChannelStrip({
                 value="record"
                 onChange={savePlaybackState}
                 checked={
-                  currentTracks[trackIndex].playbackMode.volume === "record"
+                  currentTracks[trackIndex].param === "volume"
+                    ? currentTracks[trackIndex].playbackMode.volume === "record"
+                    : currentTracks[trackIndex].playbackMode.pan === "record"
                 }
               />
               <label className="label" htmlFor={`${trackIndex}-record`}>
@@ -213,7 +215,10 @@ export default function ChannelStrip({
                 value="playback"
                 onChange={savePlaybackState}
                 checked={
-                  currentTracks[trackIndex].playbackMode.volume === "playback"
+                  currentTracks[trackIndex].param === "volume"
+                    ? currentTracks[trackIndex].playbackMode.volume ===
+                      "playback"
+                    : currentTracks[trackIndex].playbackMode.pan === "playback"
                 }
               />
               <label className="label" htmlFor={`${trackIndex}-playback`}>
@@ -228,7 +233,9 @@ export default function ChannelStrip({
                 value="free"
                 onChange={savePlaybackState}
                 checked={
-                  currentTracks[trackIndex].playbackMode.volume === "free"
+                  currentTracks[trackIndex].param === "volume"
+                    ? currentTracks[trackIndex].playbackMode.volume === "free"
+                    : currentTracks[trackIndex].playbackMode.pan === "free"
                 }
               />
               <label className="label" htmlFor={`${trackIndex}-free`}>
@@ -244,14 +251,23 @@ export default function ChannelStrip({
               id={trackIndex.toString()}
               onChange={(e) => {
                 currentTracks[trackIndex].param = e.target.value;
-                saveMix(trackIndex);
+
+                fetcher.submit(
+                  {
+                    actionName: "saveMix",
+                    currentMix: localStorage.getItem("currentMix")!,
+                    currentTracks: JSON.stringify(currentTracks),
+                  },
+                  { method: "post", action: "/saveMix", replace: true }
+                );
+
                 localStorage.setItem(
                   "currentTracks",
                   JSON.stringify([...currentTracks])
                 );
               }}
               className="effect-select"
-              defaultValue={currentTracks[trackIndex].param}
+              value={currentTracks[trackIndex].param}
             >
               <option value="volume">Volume</option>
               <option value="pan">Pan</option>
