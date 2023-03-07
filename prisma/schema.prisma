@@ -91,6 +91,7 @@ model TrackSettings {
   songSlug             String
   userId               String
   user                 User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  param                String       @default("volume")
   volume               Float        @default(-32)
   solo                 Boolean      @default(false)
   mute                 Boolean      @default(false)

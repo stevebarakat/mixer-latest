@@ -71,12 +71,12 @@ export default function ChannelStrip({
     };
   };
 
-  const saveMix = (index: number, playbackMode: PlaybackMode) => {
+  const saveMix = (index: number, playbackMode?: PlaybackMode) => {
     const currentTracksString = localStorage.getItem("currentTracks");
     const currentTracksParsed =
       currentTracksString && JSON.parse(currentTracksString);
 
-    currentTracksParsed[index].playbackMode.volume = playbackMode.volume;
+    currentTracksParsed[index].playbackMode.volume = playbackMode?.volume;
 
     console.log("playbackMode", JSON.stringify(playbackMode));
     const currentTracks = JSON.stringify(currentTracksParsed);
@@ -127,7 +127,7 @@ export default function ChannelStrip({
           return (
             <div key={fxIndex}>
               <select
-                id={trackIndex.toString()}
+                id={fxIndex.toString()}
                 onChange={(e) => selectFx(e, trackIndex, fxIndex)}
                 className="effect-select"
                 defaultValue={
@@ -225,6 +225,24 @@ export default function ChannelStrip({
           <span style={{ color: "#232323" }}>
             {currentTracks[trackIndex].playbackMode.volume}
           </span>
+          <div>
+            <select
+              id={trackIndex.toString()}
+              onChange={(e) => {
+                currentTracks[trackIndex].param = e.target.value;
+                saveMix(trackIndex);
+                localStorage.setItem(
+                  "currentTracks",
+                  JSON.stringify([...currentTracks])
+                );
+              }}
+              className="effect-select"
+              defaultValue={currentTracks[trackIndex].param}
+            >
+              <option value="volume">Volume</option>
+              <option value="pan">Pan</option>
+            </select>
+          </div>
           <div className="track-labels">
             <span className="track-name">{track.name}</span>
           </div>

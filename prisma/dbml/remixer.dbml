@@ -83,6 +83,7 @@ Table TrackSettings {
   songSlug String [not null]
   userId String [not null]
   user User [not null]
+  param String [not null, default: 'volume']
   volume Float [not null, default: -32]
   solo Boolean [not null, default: false]
   mute Boolean [not null, default: false]

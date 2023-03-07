@@ -59,6 +59,7 @@ export const action: ActionFunction = async ({ request }) => {
               id: track.id,
             },
             data: {
+              param: track.param,
               volume: track.volume,
               solo: track.solo,
               mute: track.mute,
