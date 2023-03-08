@@ -96,11 +96,13 @@ export default function ChannelStrip({
     switch (currentTracks[trackIndex].param) {
       case "volume":
         currentTracksParsed[index].playbackMode.volume = playbackMode?.volume;
-
-        currentTracksParsed[index].playbackMode.pan = playbackMode?.pan;
         break;
       case "pan":
         currentTracksParsed[index].playbackMode.pan = playbackMode?.pan;
+        break;
+      case "trackChebyshevsMix":
+        currentTracksParsed[index].playbackMode.trackChebyshevsMix =
+          playbackMode?.trackChebyshevsMix;
         break;
       default:
         break;
@@ -129,6 +131,10 @@ export default function ChannelStrip({
       case "pan":
         currentTracks[trackIndex].playbackMode.pan = target.value;
         break;
+      case "trackChebyshevsMix":
+        currentTracks[trackIndex].playbackMode.trackChebyshevsMix =
+          target.value;
+        break;
       default:
         break;
     }
@@ -138,10 +144,13 @@ export default function ChannelStrip({
     saveMix(trackIndex, currentTracks[trackIndex].playbackMode);
   }
 
-  console.log(
-    "currentTracks[trackIndex].param",
-    currentTracks[trackIndex].param
-  );
+  console.log("trackFxChoices[]", trackFxChoices);
+
+  const ubu = trackFxChoices.map((trackFxChoice, i) => trackFxChoice[0]);
+
+  console.log("ubu", ubu);
+
+  console.log("currentMix.trackFxChoices", currentMix.trackFxChoices);
 
   return (
     <div className="channel">
@@ -288,6 +297,16 @@ export default function ChannelStrip({
             >
               <option value="volume">Volume</option>
               <option value="pan">Pan</option>
+              {/* <option value={trackFxChoices[0][0]}>
+                {...[trackFxChoices]}
+              </option> */}
+              {currentMix.trackFxChoices.map(
+                (trackFxChoice: string, i: number) => (
+                  <option key={i} value={currentMix.trackFxChoices[0][1]}>
+                    {currentMix.trackFxChoices[0][1]}
+                  </option>
+                )
+              )}
             </select>
           </div>
           <div className="track-labels">

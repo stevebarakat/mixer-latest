@@ -26,6 +26,7 @@ Table PlaybackMode {
   id String [pk]
   volume String [not null, default: 'free']
   pan String [not null, default: 'free']
+  trackChebyshevsMix String [not null, default: 'free']
   TrackSettings TrackSettings [not null]
   trackSettingsId String [not null]
 }

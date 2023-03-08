@@ -46,7 +46,6 @@ function Pan({ index, channel, currentTrack }: Props) {
     const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
     realTimeMix.forEach((mix: TrackSettings[] & any) => {
-      console.log("mix", mix);
       t.schedule((time) => {
         Draw.schedule(() => {
           if (currentTracks[index].playbackMode.pan !== "playback") return;
@@ -78,7 +77,7 @@ function Pan({ index, channel, currentTrack }: Props) {
         min={-1}
         max={1}
         step={0.001}
-        value={pan || 0}
+        value={pan}
         onChange={changePan}
       />
       <div className="pan-labels">
