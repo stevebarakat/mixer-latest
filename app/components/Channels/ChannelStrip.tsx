@@ -270,7 +270,9 @@ export default function ChannelStrip({
             </div>
           </div>
           <span style={{ color: "#232323" }}>
-            {currentTracks[trackIndex].playbackMode.volume}
+            {currentTracks[trackIndex].param === "volume"
+              ? currentTracks[trackIndex].playbackMode.volume
+              : currentTracks[trackIndex].playbackMode.pan}
           </span>
           <div>
             <select
