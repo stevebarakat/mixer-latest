@@ -62,7 +62,6 @@ function TrackFader({
     realTimeMix.forEach((mix: TrackSettings[] & any) => {
       t.schedule((time) => {
         Draw.schedule(() => {
-          if (currentTracks[index].playbackMode.volume !== "playback") return;
           const transposed = transpose(mix.volume);
           const scaled = dBToPercent(transposed);
           channel.volume.value = scaled;
@@ -70,11 +69,12 @@ function TrackFader({
         }, time);
       }, mix.time);
     });
-  }, [index, channel.volume, currentTracks]);
+  }, [index, channel.volume]);
 
   useEffect(() => {
+    if (currentTracks[index].playbackMode.volume !== "playback") return;
     startPlayback();
-  }, [startPlayback]);
+  }, [startPlayback, currentTracks, index]);
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
     if (currentTracks[index].playbackMode.volume !== "playback") {
@@ -84,7 +84,7 @@ function TrackFader({
       const scaled = dBToPercent(transposed);
       channel.volume.value = scaled;
       setVolume(value);
-      currentTracks[index].volume = scaled;
+      currentTracks[index].volume = value;
       localStorage.setItem("currentTracks", JSON.stringify(currentTracks));
     }
   }
