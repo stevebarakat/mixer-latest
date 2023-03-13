@@ -46,7 +46,6 @@ function Pan({ index, channel, currentTrack }: Props) {
     const realTimeMix: any = (rtmString && JSON.parse(rtmString)) ?? [];
 
     realTimeMix.forEach((mix: TrackSettings[] & any) => {
-      console.log("mix", mix);
       t.schedule((time) => {
         Draw.schedule(() => {
           if (currentTracks[index].playbackMode.pan !== "playback") return;

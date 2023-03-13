@@ -1,5 +1,7 @@
+import type { Chebyshev } from "tone";
+
 type Props = {
-  controls: FxType;
+  controls: Chebyshev;
   currentTrack: TrackSettings;
   currentTracks: TrackSettings[];
   currentMix: MixSettings;

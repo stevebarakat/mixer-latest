@@ -34,6 +34,8 @@ model PlaybackMode {
   id              String          @id @default(uuid())
   volume          String          @default("free")
   pan             String          @default("free")
+  chebyMix        String          @default("free")
+  chebyOrder      String          @default("free")
   TrackSettings   TrackSettings[]
   trackSettingsId String          @default(uuid())
 }

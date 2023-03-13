@@ -85,7 +85,6 @@ export const action: ActionFunction = async ({ request }) => {
       break;
 
     case "savePlaybackMode":
-      console.log("HEYTHERE!!!!!");
       await db.playbackMode.update({
         where: {
           id: playbackMode.id,
