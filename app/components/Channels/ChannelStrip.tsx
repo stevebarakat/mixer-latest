@@ -297,16 +297,22 @@ export default function ChannelStrip({
             >
               <option value="volume">Volume</option>
               <option value="pan">Pan</option>
-              {/* <option value={trackFxChoices[0][0]}>
-                {...[trackFxChoices]}
-              </option> */}
-              {currentMix.trackFxChoices.map(
-                (trackFxChoice: string, i: number) => (
-                  <option key={i} value={currentMix.trackFxChoices[0][1]}>
-                    {currentMix.trackFxChoices[0][1]}
+              {currentTracks.map((currentTrack, i) => {
+                console.log(
+                  "trackFxChoices[trackIndex][i]",
+                  trackFxChoices[trackIndex][i]
+                );
+                return (
+                  <option key={i} value={trackFxChoices[trackIndex][i]}>
+                    {console.log(
+                      'trackFxChoices[trackIndex][i] !== "" ',
+                      trackFxChoices[trackIndex][i] !== undefined
+                    )}
+                    {trackFxChoices[trackIndex][i] !== undefined &&
+                      trackFxChoices[trackIndex][i]}
                   </option>
-                )
-              )}
+                );
+              })}
             </select>
           </div>
           <div className="track-labels">
