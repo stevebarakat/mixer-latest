@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import { useMatches } from "@remix-run/react";
 import BusFader from "./BusFader";
-import { dBToPercent, transpose } from "~/utils/scale";
 
 type Props = {
   busIndex: number;

@@ -15,16 +15,17 @@ function useToggleBus({ channels, busChannels }: Props) {
         if (id === i) {
           busChannels.forEach(() => {
             if (busId === null) return;
-            channels[busId].chain(busChannels[i]);
+            channels[busId].disconnect();
+            channels[busId].connect(busChannels[i]);
           });
         }
       } else {
         if (id === i && busChannels[i] !== undefined) {
           busChannels.forEach(() => {
             if (busId === null) return;
-            channels[busId].connect(busChannels[i]);
+            // channels[busId].connect(busChannels[i]);
             channels[busId].disconnect(busChannels[i]);
-            channels[busId].connect(Destination);
+            // channels[busId].connect(Destination);
           });
         }
       }

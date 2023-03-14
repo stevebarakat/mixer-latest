@@ -77,7 +77,7 @@ function Pan({ index, channel, currentTrack }: Props) {
         min={-1}
         max={1}
         step={0.001}
-        value={pan || 0}
+        value={pan}
         onChange={changePan}
       />
       <div className="pan-labels">

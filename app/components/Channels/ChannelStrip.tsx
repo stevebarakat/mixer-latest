@@ -96,11 +96,13 @@ export default function ChannelStrip({
     switch (currentTracks[trackIndex].param) {
       case "volume":
         currentTracksParsed[index].playbackMode.volume = playbackMode?.volume;
-
-        currentTracksParsed[index].playbackMode.pan = playbackMode?.pan;
         break;
       case "pan":
         currentTracksParsed[index].playbackMode.pan = playbackMode?.pan;
+        break;
+      case "trackChebyshevsMix":
+        currentTracksParsed[index].playbackMode.trackChebyshevsMix =
+          playbackMode?.trackChebyshevsMix;
         break;
       default:
         break;
@@ -129,6 +131,10 @@ export default function ChannelStrip({
       case "pan":
         currentTracks[trackIndex].playbackMode.pan = target.value;
         break;
+      case "trackChebyshevsMix":
+        currentTracks[trackIndex].playbackMode.trackChebyshevsMix =
+          target.value;
+        break;
       default:
         break;
     }
@@ -138,10 +144,13 @@ export default function ChannelStrip({
     saveMix(trackIndex, currentTracks[trackIndex].playbackMode);
   }
 
-  console.log(
-    "currentTracks[trackIndex].param",
-    currentTracks[trackIndex].param
-  );
+  console.log("trackFxChoices[]", trackFxChoices);
+
+  const ubu = trackFxChoices.map((trackFxChoice, i) => trackFxChoice[0]);
+
+  console.log("ubu", ubu);
+
+  console.log("currentMix.trackFxChoices", currentMix.trackFxChoices);
 
   return (
     <div className="channel">
@@ -261,7 +270,9 @@ export default function ChannelStrip({
             </div>
           </div>
           <span style={{ color: "#232323" }}>
-            {currentTracks[trackIndex].playbackMode.volume}
+            {currentTracks[trackIndex].param === "volume"
+              ? currentTracks[trackIndex].playbackMode.volume
+              : currentTracks[trackIndex].playbackMode.pan}
           </span>
           <div>
             <select
@@ -288,6 +299,15 @@ export default function ChannelStrip({
             >
               <option value="volume">Volume</option>
               <option value="pan">Pan</option>
+              {currentTracks.map((currentTrack: TrackSettings, i: number) => {
+                if (trackFxChoices[trackIndex][i]) {
+                  return (
+                    <option key={i} value={trackFxChoices[trackIndex][i]}>
+                      {trackFxChoices[trackIndex][i]}
+                    </option>
+                  );
+                }
+              })}
             </select>
           </div>
           <div className="track-labels">

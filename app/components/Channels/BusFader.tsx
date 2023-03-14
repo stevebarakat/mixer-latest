@@ -13,7 +13,6 @@ function BusFader({ channel, currentMix, index }: Props) {
 
   function changeVolume(e: React.FormEvent<HTMLInputElement>): void {
     const id = parseInt(e.currentTarget.id);
-    // setTrackIndex(id);
     const value = parseFloat(e.currentTarget.value);
     const transposed = transpose(value);
     const scaled = dBToPercent(transposed);
@@ -25,7 +24,8 @@ function BusFader({ channel, currentMix, index }: Props) {
   return (
     <Fader
       id={currentMix?.id}
-      // disabled={currentMix?.playbackMode === "playback"}
+      min={-100}
+      max={-50}
       channel={channel}
       volume={volume}
       changeVolume={changeVolume}
