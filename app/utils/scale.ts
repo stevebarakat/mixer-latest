@@ -21,11 +21,11 @@ export const dBToPercent = function (dB: number) {
 };
 
 export const transposeBus = (value: number) =>
-  Math.log(value + 101) / Math.log(101);
+  Math.log(value + 12) / Math.log(111);
 
 // convert dBFS to a percentage
 export const dBToPercentBus = function (dB: number) {
-  return scale(dB, 0, 1, -100, 0);
+  return scale(dB, 0, 1, -100, -60);
 };
 
 // convert percentage to dBFS -- not using
