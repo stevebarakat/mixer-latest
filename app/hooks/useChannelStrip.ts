@@ -49,10 +49,19 @@ function useChannelStrip({
           );
         } else {
           // may have to remove Destination
-          players.current[j].chain(channels.current[j], Destination);
+          players.current[j].chain(channels.current[j]);
         }
       }
     });
+    return () => {
+      tracks.forEach((_, j) => {
+        for (let i = 0; i < 2; i++) {
+          if (trackFxTypes[j][i]) {
+            trackFxTypes[j][i].disconnect();
+          }
+        }
+      });
+    };
   }, [tracks, trackFxTypes]);
 
   useEffect(() => {

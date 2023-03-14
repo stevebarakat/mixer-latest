@@ -24,9 +24,15 @@ export default function useFxType({
   currentTracks,
   channelType,
 }: Props) {
-  const fxTypes: FxType[][] = (() => {
-    let types: FxType[][] = [];
-    currentTracks.map((_, i) => (types[i] = []));
+  // const fxTypes: FxType[][] = (() => {
+  //   let types: FxType[][] = [];
+  //   currentTracks.map((_, i) => (types[i] = []));
+  //   return types;
+  // })();
+
+  const fxTypes: FxType[][] | null[][] = (() => {
+    let types: FxType[][] | null[][] = [];
+    currentTracks.map((_, i) => (types[i] = [null, null]));
     return types;
   })();
 
