@@ -4,16 +4,9 @@ import { loaded, Channel, Player, Transport as t, Destination } from "tone";
 type Props = {
   tracks: Track[];
   trackFxTypes: FxType[][];
-  busFxTypes: FxType[][];
-  busChannels: Volume[];
 };
 
-function useChannelStrip({
-  tracks,
-  trackFxTypes,
-  busFxTypes,
-  busChannels,
-}: Props) {
+function useChannelStrip({ tracks, trackFxTypes }: Props) {
   const channels = useRef<Channel[] | []>([]);
   const players = useRef<Player[] | []>([]);
 
@@ -49,7 +42,7 @@ function useChannelStrip({
           );
         } else {
           // may have to remove Destination
-          players.current[j].chain(channels.current[j]);
+          players.current[j].connect(channels.current[j]);
         }
       }
     });
@@ -63,22 +56,6 @@ function useChannelStrip({
       });
     };
   }, [tracks, trackFxTypes]);
-
-  useEffect(() => {
-    busChannels.map((busChannel) => {
-      return busFxTypes.map(
-        (busFxType, i) => busFxType[i] && busChannel.connect(busFxType[i])
-      );
-    });
-
-    return () => {
-      busChannels.map((busChannel) => {
-        return busFxTypes.map(
-          (busFxType, i) => busFxType[i] && busChannel.disconnect(busFxType[i])
-        );
-      });
-    };
-  }, [busChannels, busFxTypes]);
 
   useEffect(() => {
     loaded().then(() => setIsLoaded(true));

@@ -25,7 +25,7 @@ function BusFader({ channel, currentMix, index }: Props) {
     <Fader
       id={currentMix?.id}
       min={-100}
-      max={-50}
+      max={-30}
       channel={channel}
       volume={volume}
       changeVolume={changeVolume}

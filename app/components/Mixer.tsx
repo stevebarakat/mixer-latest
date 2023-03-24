@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useMatches } from "@remix-run/react";
-import { Destination, Loop, Volume, Transport as t } from "tone";
+import { Destination, Loop, Volume } from "tone";
 import Transport from "./Transport";
 import MasterVol from "./Channels/Master";
 import BusReceive from "./Channels/BusReceive";
@@ -78,8 +78,6 @@ function Mixer({ song }: Props) {
   const [channels, isLoaded] = useChannelStrip({
     tracks,
     trackFxTypes,
-    busFxTypes,
-    busChannels: busChannels.current,
   });
 
   useHydrate({
