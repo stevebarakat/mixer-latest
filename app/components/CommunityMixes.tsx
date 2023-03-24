@@ -38,11 +38,11 @@ function CommunityMixes({ communityMixes }: Props) {
                     }`}
                   >
                     <ul>
-                      {/* <li>Song: {communityMix.title}</li>
+                      <li>Song: {communityMix.title}</li>
                       <li>Artist: {communityMix.artist}</li>
                       <li>Year: {communityMix.year}</li>
                       <li>Studio: {communityMix.studio}</li>
-                      <li>Location: {communityMix.location}</li> */}
+                      <li>Location: {communityMix.location}</li>
                     </ul>
                   </Link>
                 </figcaption>

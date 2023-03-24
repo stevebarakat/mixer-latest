@@ -70,6 +70,8 @@ export let action: ActionFunction = async ({ request }) => {
       userId: sessionUser.id,
       userName: sessionUser.userName,
       songSlug: slug as string,
+      title: sourceSong ? sourceSong.title : "",
+      artist: sourceSong ? sourceSong.artist : "",
       coverArt,
       mixName,
     },

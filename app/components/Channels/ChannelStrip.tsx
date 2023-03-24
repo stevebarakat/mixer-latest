@@ -100,10 +100,6 @@ export default function ChannelStrip({
       case "pan":
         currentTracksParsed[index].playbackMode.pan = playbackMode?.pan;
         break;
-      case "trackChebyshevsMix":
-        currentTracksParsed[index].playbackMode.trackChebyshevsMix =
-          playbackMode?.trackChebyshevsMix;
-        break;
       default:
         break;
     }
@@ -130,10 +126,6 @@ export default function ChannelStrip({
         break;
       case "pan":
         currentTracks[trackIndex].playbackMode.pan = target.value;
-        break;
-      case "trackChebyshevsMix":
-        currentTracks[trackIndex].playbackMode.trackChebyshevsMix =
-          target.value;
         break;
       default:
         break;

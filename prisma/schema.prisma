@@ -31,12 +31,11 @@ model realTimeMix {
 }
 
 model PlaybackMode {
-  id                 String          @id @default(uuid())
-  volume             String          @default("free")
-  pan                String          @default("free")
-  trackChebyshevsMix String          @default("free")
-  TrackSettings      TrackSettings[]
-  trackSettingsId    String          @default(uuid())
+  id              String          @id @default(uuid())
+  volume          String          @default("free")
+  pan             String          @default("free")
+  TrackSettings   TrackSettings[]
+  trackSettingsId String          @default(uuid())
 }
 
 model MixSettings {
@@ -44,6 +43,11 @@ model MixSettings {
   songSlug             String
   artistPhoto          String          @default("default")
   coverArt             String          @default("0")
+  title                String
+  artist               String
+  year                 String?         @default("unknown")
+  studio               String?         @default("unknown")
+  location             String?         @default("unknown")
   mixName              String
   userName             String
   userId               String
