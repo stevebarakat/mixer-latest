@@ -49,11 +49,12 @@ function Pan({ index, channel, currentTrack }: Props) {
       t.schedule((time) => {
         Draw.schedule(() => {
           if (currentTracks[index].playbackMode.pan !== "playback") return;
+          channel.pan.value = mix.pan;
           return setPan(mix.pan);
         }, time);
       }, mix.time);
     });
-  }, [index, currentTracks]);
+  }, [index, currentTracks, channel.pan]);
 
   useEffect(() => {
     startPlayback();

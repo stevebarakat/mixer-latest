@@ -17,11 +17,26 @@ CREATE TABLE "realTimeMix" (
 );
 
 -- CreateTable
+CREATE TABLE "PlaybackMode" (
+    "id" TEXT NOT NULL,
+    "volume" TEXT NOT NULL DEFAULT 'free',
+    "pan" TEXT NOT NULL DEFAULT 'free',
+    "trackSettingsId" TEXT NOT NULL,
+
+    CONSTRAINT "PlaybackMode_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "MixSettings" (
     "id" TEXT NOT NULL,
     "songSlug" TEXT NOT NULL,
     "artistPhoto" TEXT NOT NULL DEFAULT 'default',
     "coverArt" TEXT NOT NULL DEFAULT '0',
+    "title" TEXT NOT NULL,
+    "artist" TEXT NOT NULL,
+    "year" TEXT DEFAULT 'unknown',
+    "studio" TEXT DEFAULT 'unknown',
+    "location" TEXT DEFAULT 'unknown',
     "mixName" TEXT NOT NULL,
     "userName" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -60,13 +75,14 @@ CREATE TABLE "MixSettings" (
 -- CreateTable
 CREATE TABLE "TrackSettings" (
     "id" TEXT NOT NULL,
+    "index" INTEGER NOT NULL DEFAULT 0,
     "position" SERIAL NOT NULL,
     "mixName" TEXT NOT NULL,
     "trackSettingsId" TEXT NOT NULL,
     "mixSettingsId" TEXT NOT NULL,
     "songSlug" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "playbackState" TEXT NOT NULL DEFAULT 'free',
+    "param" TEXT NOT NULL DEFAULT 'volume',
     "volume" DOUBLE PRECISION NOT NULL DEFAULT -32,
     "solo" BOOLEAN NOT NULL DEFAULT false,
     "mute" BOOLEAN NOT NULL DEFAULT false,
@@ -95,6 +111,7 @@ CREATE TABLE "TrackSettings" (
     "compressorsKnee" DOUBLE PRECISION[] DEFAULT ARRAY[20, 20]::DOUBLE PRECISION[],
     "compressorsAttack" DOUBLE PRECISION[] DEFAULT ARRAY[0.5, 0.5]::DOUBLE PRECISION[],
     "compressorsRelease" DOUBLE PRECISION[] DEFAULT ARRAY[0.5, 0.5]::DOUBLE PRECISION[],
+    "playbackModeId" TEXT NOT NULL,
 
     CONSTRAINT "TrackSettings_pkey" PRIMARY KEY ("id")
 );
@@ -136,6 +153,9 @@ ALTER TABLE "realTimeMix" ADD CONSTRAINT "realTimeMix_mixSettingsId_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "MixSettings" ADD CONSTRAINT "MixSettings_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TrackSettings" ADD CONSTRAINT "TrackSettings_playbackModeId_fkey" FOREIGN KEY ("playbackModeId") REFERENCES "PlaybackMode"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TrackSettings" ADD CONSTRAINT "TrackSettings_mixSettingsId_fkey" FOREIGN KEY ("mixSettingsId") REFERENCES "MixSettings"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -2,14 +2,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator dbml {
-  provider            = "prisma-dbml-generator"
-  outputName          = "remixer.dbml"
-  projectName         = "Remixer"
-  projectDatabaseType = "PostgreSQL"
-  projectNote         = "currently in development"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")

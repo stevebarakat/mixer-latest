@@ -7,7 +7,7 @@ import SoloMute from "./SoloMute";
 import TrackFader from "./TrackFader";
 import TrackSend from "./TrackSend";
 import { recordIcon } from "~/assets/recordIcon";
-import { earIcon } from "~/assets/earIcon";
+import play from "~/assets/play";
 
 type Props = {
   trackIndex: number;
@@ -240,7 +240,7 @@ export default function ChannelStrip({
                 }
               />
               <label className="label" htmlFor={`${trackIndex}-playback`}>
-                <div style={{ width: 10 }}>{earIcon}</div>
+                <div style={{ width: 10 }}>{play}</div>
               </label>
             </div>
             <div className="flex controls">
